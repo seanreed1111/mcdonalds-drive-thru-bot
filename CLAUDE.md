@@ -21,7 +21,15 @@ thoughts/          # Design notes and requirements
 ```bash
 uv sync            # Install dependencies
 uv run python      # Run Python with project dependencies
+uv add <package>   # Add new dependencies (always use this instead of editing pyproject.toml)
+date -Iseconds     # Get current date (use this to verify the actual date)
 ```
+
+## Important: Package Management
+
+- **Always use `uv add <package>`** to add new dependencies instead of manually editing pyproject.toml. This ensures you get the latest compatible versions.
+- Run `date -Iseconds` to check the current date before suggesting Python packages or versions.
+- Do not assume package versions do not exist based on training data—always verify against `uv.lock` and `pyproject.toml` in the repository, which reflect actually working versions.
 
 ## Models Overview
 

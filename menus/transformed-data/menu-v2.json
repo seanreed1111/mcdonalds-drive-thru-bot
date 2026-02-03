@@ -1,0 +1,2090 @@
+{
+  "menu_id": "mcd-main-menu",
+  "name": "McDonald's Menu",
+  "items": [
+    {
+      "item_id": "bacon-clubhouse-burger",
+      "name": "Bacon Clubhouse Burger",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "bacon-mcdouble",
+      "name": "Bacon McDouble",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "big-mac",
+      "name": "Big Mac",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "cheeseburger",
+      "name": "Cheeseburger",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "daily-double",
+      "name": "Daily Double",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "double-cheeseburger",
+      "name": "Double Cheeseburger",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "double-quarter-pounder",
+      "name": "Double Quarter Pounder",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "cheese",
+          "name": "Cheese"
+        }
+      ]
+    },
+    {
+      "item_id": "hamburger",
+      "name": "Hamburger",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "jalapeno-double",
+      "name": "Jalapeno Double",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcdouble",
+      "name": "McDouble",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcrib",
+      "name": "McRib",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "quarter-pounder",
+      "name": "Quarter Pounder",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "cheese",
+          "name": "Cheese"
+        },
+        {
+          "modifier_id": "bacon",
+          "name": "Bacon"
+        },
+        {
+          "modifier_id": "bacon-habanero-ranch",
+          "name": "Bacon Habanero Ranch"
+        }
+      ]
+    },
+    {
+      "item_id": "quarter-pounder-deluxe",
+      "name": "Quarter Pounder Deluxe",
+      "category_name": "beef-pork",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "1-low-fat-milk-jug",
+      "name": "1% Low Fat Milk Jug",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "coca-cola-classic-small",
+      "name": "Coca-Cola Classic",
+      "category_name": "beverages",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "coca-cola-classic",
+      "name": "Coca-Cola Classic",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "coca-cola-classic-large",
+      "name": "Coca-Cola Classic",
+      "category_name": "beverages",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "dasani-water-bottle",
+      "name": "Dasani Water Bottle",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "diet-coke-small",
+      "name": "Diet Coke",
+      "category_name": "beverages",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "diet-coke",
+      "name": "Diet Coke",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "diet-coke-large",
+      "name": "Diet Coke",
+      "category_name": "beverages",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "diet-dr-pepper-small",
+      "name": "Diet Dr Pepper",
+      "category_name": "beverages",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "diet-dr-pepper",
+      "name": "Diet Dr Pepper",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "diet-dr-pepper-large",
+      "name": "Diet Dr Pepper",
+      "category_name": "beverages",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "dr-pepper-small",
+      "name": "Dr Pepper",
+      "category_name": "beverages",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "dr-pepper",
+      "name": "Dr Pepper",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "dr-pepper-large",
+      "name": "Dr Pepper",
+      "category_name": "beverages",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "fat-free-chocolate-milk-jug",
+      "name": "Fat Free Chocolate Milk Jug",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "minute-maid-100-apple-juice-box",
+      "name": "Minute Maid 100% Apple Juice Box",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "minute-maid-orange-juice-small",
+      "name": "Minute Maid Orange Juice",
+      "category_name": "beverages",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "minute-maid-orange-juice",
+      "name": "Minute Maid Orange Juice",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "minute-maid-orange-juice-large",
+      "name": "Minute Maid Orange Juice",
+      "category_name": "beverages",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sprite-small",
+      "name": "Sprite",
+      "category_name": "beverages",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sprite",
+      "name": "Sprite",
+      "category_name": "beverages",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sprite-large",
+      "name": "Sprite",
+      "category_name": "beverages",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "bacon",
+      "name": "Bacon",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "big-breakfast",
+      "name": "Big Breakfast",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "egg-whites",
+          "name": "Egg Whites"
+        },
+        {
+          "modifier_id": "hotcakes",
+          "name": "Hotcakes"
+        }
+      ]
+    },
+    {
+      "item_id": "big-breakfast-large",
+      "name": "Big Breakfast",
+      "category_name": "breakfast",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "egg-whites",
+          "name": "Egg Whites"
+        },
+        {
+          "modifier_id": "hotcakes",
+          "name": "Hotcakes"
+        }
+      ]
+    },
+    {
+      "item_id": "cinnamon-melts",
+      "name": "Cinnamon Melts",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "egg-mcmuffin",
+      "name": "Egg McMuffin",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "egg-white-delight",
+      "name": "Egg White Delight",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "fruit-maple-oatmeal",
+      "name": "Fruit & Maple Oatmeal",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "brown-sugar",
+          "name": "Brown Sugar"
+        }
+      ]
+    },
+    {
+      "item_id": "hash-brown",
+      "name": "Hash Brown",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hotcakes",
+      "name": "Hotcakes",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hotcakes-and-sausage",
+      "name": "Hotcakes and Sausage",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sausage",
+      "name": "Sausage",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sausage-biscuit",
+      "name": "Sausage Biscuit",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "egg",
+          "name": "Egg"
+        },
+        {
+          "modifier_id": "egg-whites",
+          "name": "Egg Whites"
+        }
+      ]
+    },
+    {
+      "item_id": "sausage-biscuit-large",
+      "name": "Sausage Biscuit",
+      "category_name": "breakfast",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "egg",
+          "name": "Egg"
+        },
+        {
+          "modifier_id": "egg-whites",
+          "name": "Egg Whites"
+        }
+      ]
+    },
+    {
+      "item_id": "sausage-burrito",
+      "name": "Sausage Burrito",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sausage-mcgriddles",
+      "name": "Sausage McGriddles",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sausage-mcmuffin",
+      "name": "Sausage McMuffin",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "egg",
+          "name": "Egg"
+        },
+        {
+          "modifier_id": "egg-whites",
+          "name": "Egg Whites"
+        }
+      ]
+    },
+    {
+      "item_id": "southern-style-chicken-biscuit",
+      "name": "Southern Style Chicken Biscuit",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "southern-style-chicken-biscuit-large",
+      "name": "Southern Style Chicken Biscuit",
+      "category_name": "breakfast",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "steak",
+      "name": "Steak",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "steak-egg-biscuit",
+      "name": "Steak & Egg Biscuit",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "steak-egg-biscuit-large",
+      "name": "Steak & Egg Biscuit",
+      "category_name": "breakfast",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "steak-egg-mcmuffin",
+      "name": "Steak & Egg McMuffin",
+      "category_name": "breakfast",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "bacon-buffalo-ranch-mcchicken",
+      "name": "Bacon Buffalo Ranch McChicken",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "bacon-cheddar-mcchicken",
+      "name": "Bacon Cheddar McChicken",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "bacon-clubhouse-crispy-chicken-sandwich",
+      "name": "Bacon Clubhouse Crispy Chicken Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "bacon-clubhouse-grilled-chicken-sandwich",
+      "name": "Bacon Clubhouse Grilled Chicken Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "buffalo-ranch-mcchicken",
+      "name": "Buffalo Ranch McChicken",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chicken-mcnuggets-snack",
+      "name": "Chicken McNuggets",
+      "category_name": "chicken-fish",
+      "size": "snack",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chicken-mcnuggets-small",
+      "name": "Chicken McNuggets",
+      "category_name": "chicken-fish",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chicken-mcnuggets",
+      "name": "Chicken McNuggets",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chicken-mcnuggets-large",
+      "name": "Chicken McNuggets",
+      "category_name": "chicken-fish",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "filet-o-fish",
+      "name": "Filet-O-Fish",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcchicken",
+      "name": "McChicken",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-crispy-chicken-classic-sandwich",
+      "name": "Premium Crispy Chicken Classic Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-crispy-chicken-club-sandwich",
+      "name": "Premium Crispy Chicken Club Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-crispy-chicken-ranch-blt-sandwich",
+      "name": "Premium Crispy Chicken Ranch BLT Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-grilled-chicken-classic-sandwich",
+      "name": "Premium Grilled Chicken Classic Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-grilled-chicken-club-sandwich",
+      "name": "Premium Grilled Chicken Club Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-grilled-chicken-ranch-blt-sandwich",
+      "name": "Premium Grilled Chicken Ranch BLT Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-mcwrap-chicken-bacon",
+      "name": "Premium McWrap Chicken & Bacon",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "premium-mcwrap-chicken-ranch",
+      "name": "Premium McWrap Chicken & Ranch",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "premium-mcwrap-chicken-sweet-chili",
+      "name": "Premium McWrap Chicken Sweet Chili",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "premium-mcwrap-southwest-chicken",
+      "name": "Premium McWrap Southwest Chicken",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "southern-style-crispy-chicken-sandwich",
+      "name": "Southern Style Crispy Chicken Sandwich",
+      "category_name": "chicken-fish",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-iced-coffee-small",
+      "name": "Caramel Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-iced-coffee",
+      "name": "Caramel Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-iced-coffee-large",
+      "name": "Caramel Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-latte-small",
+      "name": "Caramel Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-latte",
+      "name": "Caramel Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-latte-large",
+      "name": "Caramel Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-mocha-small",
+      "name": "Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-mocha",
+      "name": "Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "caramel-mocha-large",
+      "name": "Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "coffee-small",
+      "name": "Coffee",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "coffee-large",
+      "name": "Coffee",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "coffee-medium",
+      "name": "Coffee, Medium ",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-caramel-small",
+      "name": "Frappe Caramel",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-caramel",
+      "name": "Frappe Caramel",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-caramel-large",
+      "name": "Frappe Caramel",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-chocolate-chip-small",
+      "name": "Frappe Chocolate Chip",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-chocolate-chip",
+      "name": "Frappe Chocolate Chip",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-chocolate-chip-large",
+      "name": "Frappe Chocolate Chip",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-mocha-small",
+      "name": "Frappe Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-mocha",
+      "name": "Frappe Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "frappe-mocha-large",
+      "name": "Frappe Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-vanilla-iced-coffee-small",
+      "name": "French Vanilla Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-vanilla-iced-coffee",
+      "name": "French Vanilla Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-vanilla-iced-coffee-large",
+      "name": "French Vanilla Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-vanilla-latte-small",
+      "name": "French Vanilla Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-vanilla-latte",
+      "name": "French Vanilla Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-vanilla-latte-large",
+      "name": "French Vanilla Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hazelnut-iced-coffee-small",
+      "name": "Hazelnut Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hazelnut-iced-coffee",
+      "name": "Hazelnut Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hazelnut-iced-coffee-large",
+      "name": "Hazelnut Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hazelnut-latte-small",
+      "name": "Hazelnut Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hazelnut-latte",
+      "name": "Hazelnut Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hazelnut-latte-large",
+      "name": "Hazelnut Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hot-chocolate-small",
+      "name": "Hot Chocolate",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "hot-chocolate",
+      "name": "Hot Chocolate",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "hot-chocolate-large",
+      "name": "Hot Chocolate",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-caramel-mocha-small",
+      "name": "Iced Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-caramel-mocha",
+      "name": "Iced Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-caramel-mocha-large",
+      "name": "Iced Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-coffee-small",
+      "name": "Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-coffee",
+      "name": "Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-coffee-large",
+      "name": "Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-mocha-small",
+      "name": "Iced Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-mocha",
+      "name": "Iced Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-mocha-large",
+      "name": "Iced Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "iced-nonfat-caramel-mocha-small",
+      "name": "Iced Nonfat Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-nonfat-caramel-mocha",
+      "name": "Iced Nonfat Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-nonfat-caramel-mocha-large",
+      "name": "Iced Nonfat Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-tea-small",
+      "name": "Iced Tea",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-tea",
+      "name": "Iced Tea",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "iced-tea-large",
+      "name": "Iced Tea",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "latte-small",
+      "name": "Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "latte",
+      "name": "Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "latte-large",
+      "name": "Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "mocha-small",
+      "name": "Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "mocha",
+      "name": "Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "mocha-large",
+      "name": "Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "nonfat-milk",
+          "name": "Nonfat Milk"
+        }
+      ]
+    },
+    {
+      "item_id": "nonfat-caramel-latte-small",
+      "name": "Nonfat Caramel Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-caramel-latte",
+      "name": "Nonfat Caramel Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-caramel-latte-large",
+      "name": "Nonfat Caramel Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-caramel-mocha-small",
+      "name": "Nonfat Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-caramel-mocha",
+      "name": "Nonfat Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-caramel-mocha-large",
+      "name": "Nonfat Caramel Mocha",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-french-vanilla-latte-small",
+      "name": "Nonfat French Vanilla Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-french-vanilla-latte",
+      "name": "Nonfat French Vanilla Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-french-vanilla-latte-large",
+      "name": "Nonfat French Vanilla Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-hazelnut-latte-small",
+      "name": "Nonfat Hazelnut Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-hazelnut-latte",
+      "name": "Nonfat Hazelnut Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-hazelnut-latte-large",
+      "name": "Nonfat Hazelnut Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "nonfat-latte-small",
+      "name": "Nonfat Latte",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "nonfat-latte",
+      "name": "Nonfat Latte",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "nonfat-latte-large",
+      "name": "Nonfat Latte",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "sugar-free-french-vanilla-syrup",
+          "name": "Sugar Free French Vanilla Syrup"
+        }
+      ]
+    },
+    {
+      "item_id": "regular-iced-coffee-small",
+      "name": "Regular Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "regular-iced-coffee",
+      "name": "Regular Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "regular-iced-coffee-large",
+      "name": "Regular Iced Coffee",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sweet-tea-small",
+      "name": "Sweet Tea",
+      "category_name": "coffee-tea",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sweet-tea",
+      "name": "Sweet Tea",
+      "category_name": "coffee-tea",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "sweet-tea-large",
+      "name": "Sweet Tea",
+      "category_name": "coffee-tea",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "baked-apple-pie",
+      "name": "Baked Apple Pie",
+      "category_name": "desserts",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chocolate-chip-cookie",
+      "name": "Chocolate Chip Cookie",
+      "category_name": "desserts",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hot-caramel-sundae",
+      "name": "Hot Caramel Sundae",
+      "category_name": "desserts",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "hot-fudge-sundae",
+      "name": "Hot Fudge Sundae",
+      "category_name": "desserts",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "ice-cream-cone-small",
+      "name": "Ice Cream Cone",
+      "category_name": "desserts",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "oatmeal-raisin-cookie",
+      "name": "Oatmeal Raisin Cookie",
+      "category_name": "desserts",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-sundae",
+      "name": "Strawberry Sundae",
+      "category_name": "desserts",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "premium-bacon-ranch-salad",
+      "name": "Premium Bacon Ranch Salad",
+      "category_name": "salads",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "premium-southwest-salad",
+      "name": "Premium Southwest Salad",
+      "category_name": "salads",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "blueberry-pomegranate-smoothie-small",
+      "name": "Blueberry Pomegranate Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "blueberry-pomegranate-smoothie",
+      "name": "Blueberry Pomegranate Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "blueberry-pomegranate-smoothie-large",
+      "name": "Blueberry Pomegranate Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chocolate-shake-small",
+      "name": "Chocolate Shake",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chocolate-shake",
+      "name": "Chocolate Shake",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chocolate-shake-large",
+      "name": "Chocolate Shake",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mango-pineapple-smoothie-small",
+      "name": "Mango Pineapple Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mango-pineapple-smoothie",
+      "name": "Mango Pineapple Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mango-pineapple-smoothie-large",
+      "name": "Mango Pineapple Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-m-ms-candies-small",
+      "name": "McFlurry with M&Ms Candies",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-m-ms-candies",
+      "name": "McFlurry with M&Ms Candies",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-m-ms-candies-snack",
+      "name": "McFlurry with M&Ms Candies",
+      "category_name": "smoothies-shakes",
+      "size": "snack",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-oreo-cookies-small",
+      "name": "McFlurry with Oreo Cookies",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-oreo-cookies",
+      "name": "McFlurry with Oreo Cookies",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-oreo-cookies-snack",
+      "name": "McFlurry with Oreo Cookies",
+      "category_name": "smoothies-shakes",
+      "size": "snack",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-reeses-peanut-butter-cups",
+      "name": "McFlurry with Reeses Peanut Butter Cups",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-reeses-peanut-butter-cups-small",
+      "name": "McFlurry with Reeses Peanut Butter Cups",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "mcflurry-with-reeses-peanut-butter-cups-snack",
+      "name": "McFlurry with Reeses Peanut Butter Cups",
+      "category_name": "smoothies-shakes",
+      "size": "snack",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "shamrock-shake-small",
+      "name": "Shamrock Shake",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "shamrock-shake",
+      "name": "Shamrock Shake",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "shamrock-shake-large",
+      "name": "Shamrock Shake",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-banana-smoothie-small",
+      "name": "Strawberry Banana Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-banana-smoothie",
+      "name": "Strawberry Banana Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-banana-smoothie-large",
+      "name": "Strawberry Banana Smoothie",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-shake-small",
+      "name": "Strawberry Shake",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-shake",
+      "name": "Strawberry Shake",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "strawberry-shake-large",
+      "name": "Strawberry Shake",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "vanilla-shake-small",
+      "name": "Vanilla Shake",
+      "category_name": "smoothies-shakes",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "vanilla-shake",
+      "name": "Vanilla Shake",
+      "category_name": "smoothies-shakes",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "vanilla-shake-large",
+      "name": "Vanilla Shake",
+      "category_name": "smoothies-shakes",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "apple-slices",
+      "name": "Apple Slices",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "chipotle-bbq-snack-wrap",
+      "name": "Chipotle BBQ Snack Wrap",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "french-fries-small",
+      "name": "French Fries",
+      "category_name": "snacks-sides",
+      "size": "small",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-fries",
+      "name": "French Fries",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "french-fries-large",
+      "name": "French Fries",
+      "category_name": "snacks-sides",
+      "size": "large",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "fruit-and-yogurt-parfait",
+      "name": "Fruit and Yogurt Parfait",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    },
+    {
+      "item_id": "honey-mustard-snack-wrap",
+      "name": "Honey Mustard Snack Wrap",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "ranch-snack-wrap",
+      "name": "Ranch Snack Wrap",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": [
+        {
+          "modifier_id": "crispy-chicken",
+          "name": "Crispy Chicken"
+        },
+        {
+          "modifier_id": "grilled-chicken",
+          "name": "Grilled Chicken"
+        }
+      ]
+    },
+    {
+      "item_id": "side-salad",
+      "name": "Side Salad",
+      "category_name": "snacks-sides",
+      "size": "medium",
+      "quantity": 1,
+      "modifiers": [],
+      "available_modifiers": []
+    }
+  ]
+}

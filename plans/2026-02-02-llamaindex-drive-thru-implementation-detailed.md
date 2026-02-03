@@ -246,11 +246,19 @@ gantt
 
 ## Task Breakdown
 
+> **📦 Package Management Best Practice:** Always use `uv add <package>` to add new dependencies instead of manually editing pyproject.toml. This ensures you get the latest compatible versions and avoids version conflicts.
+
 ### Phase 1: Project Setup
 
 #### Task 1.1: Update pyproject.toml
 
 **File:** `pyproject.toml`
+
+> **⚠️ IMPORTANT:** Use `uv add <package>` instead of manually editing pyproject.toml. This ensures you get the latest compatible versions. The content below shows the probable target state for reference, but dependencies should be added via:
+> ```bash
+> uv add llama-index llama-index-llms-anthropic pydantic pydantic-settings thefuzz python-Levenshtein
+> uv add --group dev pre-commit ruff pytest pytest-asyncio mypy
+> ```
 
 **Action:** Replace entire file content with:
 
@@ -403,10 +411,12 @@ uv run python -c "from src.models import Item, Order; print('Models import OK')"
 
 #### Task 1.5: Install dependencies
 
-**Action:** Run:
+**Action:** If you used `uv add` commands in Task 1.1 (recommended), dependencies are already installed. Otherwise, run:
 ```bash
 uv sync
 ```
+
+> **Note:** When adding dependencies in the future, always use `uv add <package>` rather than editing pyproject.toml directly. This ensures compatibility with the latest package versions.
 
 **Verification:**
 ```bash

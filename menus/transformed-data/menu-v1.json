@@ -115,16 +115,16 @@
       "modifiers": [],
       "available_modifiers": [
         {
-          "modifier_id": "bacon-cheese",
-          "name": "Bacon & Cheese"
+          "modifier_id": "cheese",
+          "name": "Cheese"
+        },
+        {
+          "modifier_id": "bacon",
+          "name": "Bacon"
         },
         {
           "modifier_id": "bacon-habanero-ranch",
           "name": "Bacon Habanero Ranch"
-        },
-        {
-          "modifier_id": "cheese",
-          "name": "Cheese"
         }
       ]
     },
