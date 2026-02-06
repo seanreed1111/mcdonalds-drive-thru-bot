@@ -6,6 +6,15 @@
 - Fix Langfuse tracing not appearing in dashboard by migrating to SDK v3 singleton pattern (#5)
 
 ### Added
+- Add ty type checker as dev dependency with `make typecheck` target (#6)
+- Add `prune_branches` Claude command for cleaning up local git branches (#6)
+- Add secret scanning with gitleaks pre-commit hook (#6)
+
+### Fixed
+- Fix `create_graph()` return type annotation (`StateGraph` → `CompiledStateGraph`) (#6)
+- Fix Langfuse tracing not appearing in dashboard by migrating to SDK v3 singleton pattern (#5)
+
+### Added
 - Add v0-stage-1 simple chatbot with LangGraph, Mistral AI, and Langfuse observability (#5)
 - Add streaming CLI chat interface with session/user ID tracing (#5)
 - Add LangGraph Platform deployment config (`langgraph.json`) (#5)

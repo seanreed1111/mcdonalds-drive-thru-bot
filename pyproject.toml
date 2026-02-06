@@ -33,6 +33,7 @@ dependencies = [
 dev = [
     "pre-commit>=4.5.1",
     "ruff>=0.14.14",
+    "ty>=0.0.15",
 ]
 
 [tool.ruff]
@@ -51,6 +52,12 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+[tool.ty.src]
+include = ["src"]
+
+[tool.ty.environment]
+python-version = "3.12"
 
 [tool.setuptools.package-dir]
 "" = "src"

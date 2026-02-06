@@ -7,6 +7,7 @@ from langchain_mistralai import ChatMistralAI
 from langfuse import Langfuse, get_client
 from langfuse.langchain import CallbackHandler
 from langgraph.graph import START, END, StateGraph, MessagesState
+from langgraph.graph.state import CompiledStateGraph
 
 from stage_1.config import get_settings
 
@@ -42,7 +43,7 @@ def create_chat_model() -> ChatMistralAI:
     settings = get_settings()
     return ChatMistralAI(
         model="mistral-small-latest",
-        api_key=settings.mistral_api_key,
+        api_key=settings.mistral_api_key,  # type: ignore[unknown-argument]  # valid at runtime
         temperature=0.7,
     )
 
@@ -63,9 +64,9 @@ def chatbot(state: MessagesState) -> dict:
     return {"messages": [response]}
 
 
-def create_graph() -> StateGraph:
+def create_graph() -> CompiledStateGraph:
     """Create the chatbot graph."""
-    graph_builder = StateGraph(MessagesState)
+    graph_builder = StateGraph(MessagesState)  # type: ignore[invalid-argument-type]  # valid at runtime
     graph_builder.add_node("chatbot", chatbot)
     graph_builder.add_edge(START, "chatbot")
     graph_builder.add_edge("chatbot", END)

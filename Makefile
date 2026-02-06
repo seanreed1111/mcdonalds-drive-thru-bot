@@ -1,4 +1,4 @@
-.PHONY: chat dev test-smoke help
+.PHONY: chat dev test-smoke typecheck help
 
 # Default target
 help:
@@ -6,6 +6,7 @@ help:
 	@echo "  make chat       - Run CLI chatbot"
 	@echo "  make dev        - Run LangGraph Studio"
 	@echo "  make test-smoke - Verify imports and graph compilation"
+	@echo "  make typecheck  - Run ty type checker"
 	@echo "  make help       - Show this help"
 
 # Run CLI chatbot
@@ -15,6 +16,10 @@ chat:
 # Run LangGraph Studio (requires langgraph.json)
 dev:
 	uv run langgraph dev
+
+# Type check with ty
+typecheck:
+	uv run ty check
 
 # Smoke test - verify imports work and graph compiles
 test-smoke:

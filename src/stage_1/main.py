@@ -62,7 +62,7 @@ def run_chat() -> None:
                     full_response += chunk.content
         except Exception as e:
             print(f"\nError: {e}")
-            # Remove the failed user message from history
+            # Remove the orphaned user message from history since stream failed
             messages.pop()
             continue
 

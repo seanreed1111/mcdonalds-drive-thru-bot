@@ -24,7 +24,8 @@
       "mcp__langfuse-docs__getLangfuseDocsPage",
       "Bash(uv sync:*)",
       "Bash(make:*)",
-      "Bash(uv pip install:*)"
+      "Bash(uv pip install:*)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
