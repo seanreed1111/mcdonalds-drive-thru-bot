@@ -8,6 +8,21 @@ model: opus
 
 You are tasked with creating detailed implementation plans through an interactive, iterative process. You should be skeptical, thorough, and work collaboratively with the user to produce high-quality technical specifications.
 
+## Core Principle: Plans as Agent-Executable Specifications
+
+**Every plan you write will be executed by an autonomous Claude agent (via `/implement_plan`).** This means:
+
+- The executing agent has NO prior context — it reads ONLY the plan file
+- Every instruction must be **unambiguous and self-contained** — no "use your judgment" or "something like"
+- File paths must be **exact and absolute** (relative to project root)
+- Code snippets must be **complete and copy-pasteable** — not pseudocode, not partial snippets
+- When you say "modify file X", show the **exact old code** being replaced and the **exact new code**
+- Commands must be **runnable as-is** — include all flags, environment variables, working directory context
+- Decision points must be **pre-decided** — if there's a choice, YOU make it in the plan and document why
+- Edge cases must be **explicitly handled** — don't leave "handle errors appropriately" — specify HOW
+
+**Litmus test:** If you removed all section headings and gave the raw instructions to a code-only agent with no ability to ask questions, could it execute the plan perfectly? If not, add more detail.
+
 ## Initial Response
 
 When this command is invoked:
@@ -284,9 +299,62 @@ Use this for plans under 400 lines:
 
 [Explicitly list out-of-scope items to prevent scope creep]
 
+## File Inventory
+
+Summary of all files touched by this plan:
+
+| File | Action | Phase | Purpose |
+|------|--------|-------|---------|
+| `src/auth/login.py` | CREATE | 1 | Login endpoint handler |
+| `src/auth/models.py` | MODIFY | 1 | Add User model |
+| `src/config.py` | MODIFY | 2 | Add auth settings |
+| `tests/auth/test_login.py` | CREATE | 1 | Login tests |
+| `src/legacy/old_auth.py` | DELETE | 3 | Replaced by new auth |
+
 ## Implementation Approach
 
 [High-level strategy and reasoning]
+
+### Execution Flow
+
+Include a mermaid diagram showing the overall execution flow — how phases connect,
+what triggers transitions, and where the plan starts and ends:
+
+```mermaid
+graph TD
+    P1["Phase 1: Data Model"]
+    P2["Phase 2: Backend Logic"]
+    P3["Phase 3: API Layer"]
+    P4["Phase 4: Integration Tests"]
+
+    P1 --> P2
+    P1 --> P3
+    P2 --> P4
+    P3 --> P4
+```
+
+### Architecture / Data Flow (if applicable)
+
+When the plan involves components that interact at runtime, include a mermaid diagram
+showing how data flows between them after implementation is complete:
+
+```mermaid
+flowchart LR
+    Client -->|HTTP POST| API["API Endpoint"]
+    API -->|validate| Model["Pydantic Model"]
+    Model -->|persist| DB["Database"]
+    DB -->|event| Queue["Message Queue"]
+```
+
+### Decision Log
+
+Document key decisions made during planning so the executing agent understands WHY,
+not just WHAT. Use a table for quick scanning:
+
+| Decision | Options Considered | Chosen | Rationale |
+|----------|-------------------|--------|-----------|
+| Auth method | JWT vs Session | JWT | Stateless, fits our API-first arch |
+| ORM | SQLAlchemy vs raw SQL | SQLAlchemy | Existing pattern in codebase |
 
 ## Dependencies
 
@@ -296,12 +364,17 @@ Use this for plans under 400 lines:
 2. Phase 2 (depends on Phase 1)
 3. Phase 3 (depends on Phases 1 & 2)
 
-**Dependency Graph:**
+**Dependency Graph (mermaid):**
 
-```
-Phase 1 (Authentication)
-  ├─> Phase 2 (Billing - needs auth)
-  └─> Phase 3 (Integration - needs both)
+```mermaid
+graph TD
+    P1["Phase 1: Authentication"]
+    P2["Phase 2: Billing"]
+    P3["Phase 3: Integration"]
+
+    P1 --> P2
+    P1 --> P3
+    P2 --> P3
 ```
 
 **Parallelization:**
@@ -329,21 +402,37 @@ Before starting, read these files:
 
 #### 1.1: [Component/File Group]
 **File:** `path/to/file.ext`
+**Action:** CREATE | REPLACE_ENTIRE | MODIFY
 
-**Changes:**
-[Summary of changes]
+**What this does:** [1-sentence summary of the change's purpose]
 
+**Before** (current code — skip if Action is CREATE):
 ```[language]
-// Specific code to add/modify
+// Exact code being replaced, with enough surrounding context to locate it
 ```
 
-**Rationale:** [Why this change is needed]
+**After** (new code):
+```[language]
+// Complete, copy-pasteable replacement code
+```
+
+**Rationale:** [Why this specific approach was chosen over alternatives]
 
 #### 1.2: [Another Component]
 **File:** `path/to/another.ext`
+**Action:** CREATE | REPLACE_ENTIRE | MODIFY
 
-**Changes:**
-[Summary of changes]
+**What this does:** [1-sentence summary]
+
+**Before:**
+```[language]
+// existing code
+```
+
+**After:**
+```[language]
+// new code
+```
 
 ### Success Criteria
 
@@ -477,10 +566,15 @@ plan/future-plans/YYYY-MM-DD-feature-name/
 
 **Dependency Graph:**
 
-```
-01-authentication.md
-  ├─> 02-billing.md
-  └─> 03-integration.md
+```mermaid
+graph TD
+    P1["01-authentication.md"]
+    P2["02-billing.md"]
+    P3["03-integration.md"]
+
+    P1 --> P2
+    P1 --> P3
+    P2 --> P3
 ```
 
 **Parallelization:**
@@ -613,6 +707,10 @@ Before starting, read these files:
    - Identify subsystem boundaries for task grouping and parallelization
    - Document context loading needs for each phase
    - Bundle trivial changes together (don't create separate tasks for small related changes)
+   - Include mermaid diagrams for execution flow, dependency graphs, and architecture/data flow
+   - Show Before/After code snapshots for every file modification (not just "add X")
+   - Include a Decision Log table for non-obvious choices
+   - Write code snippets that are complete and copy-pasteable — never pseudocode
 
 4. **Be Practical**:
    - Focus on incremental, testable changes
@@ -684,6 +782,15 @@ When creating plans, follow these rules:
 10. **No open questions**: Resolve all questions before finalizing plan - research or ask for clarification immediately
 11. **Bundle trivial changes**: Group small related changes (add export, update config, rename) into one task
 12. **Task grouping**: Group tasks by subsystem to enable parallel execution and context sharing
+13. **Mermaid diagrams required**: Every plan must include:
+    - A **dependency graph** (`graph TD`) showing phase execution order and parallelization
+    - An **execution flow** diagram showing the step-by-step path through phases
+    - An **architecture/data flow** diagram (when applicable) showing how components interact at runtime
+    - Use `flowchart`, `sequenceDiagram`, or `stateDiagram-v2` as appropriate for the content
+14. **Before/After code snapshots**: For every MODIFY action, show the exact existing code being replaced and the exact new code. For CREATE actions, show the complete file content. Never describe changes in prose alone.
+15. **Decision log**: Include a decision table documenting non-obvious technical choices, alternatives considered, and rationale. This gives the executing agent context for WHY decisions were made.
+16. **Agent-executable specificity**: Every instruction must be unambiguous enough for an autonomous Claude agent to execute without asking questions. No "use your judgment", "something like", or "handle errors appropriately" — specify exactly what to do.
+17. **File inventory**: Include a summary table of all files created/modified/deleted by the plan, with their action type and purpose.
 
 ## Common Patterns
 

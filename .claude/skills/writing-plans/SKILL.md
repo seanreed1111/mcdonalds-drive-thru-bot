@@ -16,18 +16,24 @@ Invoke this skill when you need to:
 
 ## What Happens
 
-This skill **delegates to the /create_plan command**, which provides:
+This skill **delegates to the /create_plan command**, which produces **agent-executable implementation plans** — detailed enough for an autonomous Claude agent to follow without ambiguity via `/implement_plan`.
+
+Key features:
 - Interactive research process with sub-agent analysis
 - Comprehensive codebase investigation before planning
 - Iterative plan development with user collaboration
+- **Mermaid diagrams** for execution flow, dependency graphs, and architecture/data flow
+- **Before/After code snapshots** for every file modification
+- **Decision log tables** documenting technical choices and rationale
+- **File inventory** summarizing all files created/modified/deleted
 - Structured templates with dependencies and success criteria
-- Plans saved to `plans/YYYY-MM-DD-<feature-name>.md`
+- Plans saved to `plan/future-plans/YYYY-MM-DD-<feature-name>.md`
 
 The command will:
 1. Gather context through parallel research tasks
 2. Analyze the codebase to understand current state
 3. Collaborate with you on approach and structure
-4. Create a detailed, actionable implementation plan
+4. Create a detailed, agent-executable implementation plan with diagrams and supporting material
 5. Iterate based on your feedback until approved
 
 ## Invocation
