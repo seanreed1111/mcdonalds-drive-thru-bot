@@ -25,7 +25,27 @@
       "Bash(uv sync:*)",
       "Bash(make:*)",
       "Bash(uv pip install:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(choco:*)",
+      "Bash(cmd.exe //c \"choco --version\")",
+      "Bash(cmd.exe //c \"pre-commit --version\")",
+      "Bash(uv tool install:*)",
+      "Bash(echo:*)",
+      "Bash(\"C:/ProgramData/chocolatey/bin/choco.exe\" --version)",
+      "Bash(powershell.exe:*)",
+      "Bash(tr:*)",
+      "Bash(ls:*)",
+      "Bash(source:*)",
+      "Bash(git branch:*)",
+      "Bash(gh pr view:*)",
+      "Bash(git fetch:*)",
+      "Bash(git merge-tree:*)",
+      "Bash(git merge:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git pull:*)",
+      "Bash(where:*)",
+      "WebFetch(domain:blog.freidereikhs.dev)"
     ]
   }
 }
