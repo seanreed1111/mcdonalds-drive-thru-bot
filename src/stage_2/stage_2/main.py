@@ -13,7 +13,7 @@ def run_chat() -> None:
     session_id = f"cli-session-{uuid.uuid4().hex[:8]}"
     user_id = f"cli-user-{uuid.uuid4().hex[:8]}"
 
-    print("Stage-1 Chatbot (type 'quit' to exit)")
+    print("Stage-2 Chatbot (type 'quit' to exit)")
     print(f"Session: {session_id}")
     print("-" * 40)
 
