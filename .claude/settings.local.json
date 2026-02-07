@@ -48,7 +48,9 @@
       "WebFetch(domain:blog.freidereikhs.dev)",
       "Bash(test:*)",
       "WebFetch(domain:hatch.pypa.io)",
-      "WebFetch(domain:tomasrepcik.dev)"
+      "WebFetch(domain:tomasrepcik.dev)",
+      "Bash(uv tree:*)",
+      "Bash(uv pip list:*)"
     ]
   }
 }

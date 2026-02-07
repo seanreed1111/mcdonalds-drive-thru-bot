@@ -13,6 +13,13 @@ description: Commit, push, and open a PR with changelog update
 
 Based on the above changes:
 
+### Phase 0: Check for unstaged files
+1. Review the git status output above for any unstaged or untracked files
+2. If there are unstaged or untracked files, list them clearly and ask:
+   "These files have unstaged/untracked changes. Would you like me to include any of them?"
+3. Wait for user response before proceeding to Phase 1
+4. Only continue once the user has confirmed which files to include (or confirmed none)
+
 ### **CRITICAL: Prevent circular dependencies**
 **Before doing ANYTHING else, check if CHANGELOG.md is the ONLY file with changes.**
 - If CHANGELOG.md is the only modified file, SKIP Phase 2 entirely

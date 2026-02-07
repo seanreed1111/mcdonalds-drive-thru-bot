@@ -52,3 +52,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# LangGraph Platform
+.langgraph_api/
