@@ -244,7 +244,7 @@ exclude = ["tests/", "*.json"]
 
 ```bash
 # Install all workspace dependencies
-uv sync
+uv sync --all-packages
 
 # Sync only a specific package and its deps
 uv sync --package voice-agent
