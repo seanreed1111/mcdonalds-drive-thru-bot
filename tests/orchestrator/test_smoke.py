@@ -8,7 +8,7 @@ import json
 
 from langchain_core.messages import AIMessage, ToolMessage
 
-from orchestrator.graph import DriveThruState, graph, update_order
+from orchestrator.graph import DriveThruState, _extract_reasoning, graph, update_order
 from orchestrator.models import Menu, Order
 from orchestrator.enums import CategoryName, Size
 
@@ -159,3 +159,58 @@ class TestUpdateOrderNode:
 
         result = update_order(state)
         assert len(result["current_order"].items) == 0
+
+
+class TestReasoning:
+    """Test reasoning extraction and formatting."""
+
+    def test_extract_reasoning_with_tags(self):
+        """_extract_reasoning should extract text from <reasoning> tags."""
+        content = "<reasoning>Looking up the item first.</reasoning>Sure, let me check that for you."
+        reasoning, cleaned = _extract_reasoning(content)
+        assert reasoning == "Looking up the item first."
+        assert cleaned == "Sure, let me check that for you."
+
+    def test_extract_reasoning_without_tags(self):
+        """_extract_reasoning should return empty string when no tags present."""
+        content = "Sure, let me check that for you."
+        reasoning, cleaned = _extract_reasoning(content)
+        assert reasoning == ""
+        assert cleaned == "Sure, let me check that for you."
+
+    def test_extract_reasoning_multiline(self):
+        """_extract_reasoning should handle multiline reasoning."""
+        content = (
+            "<reasoning>Customer wants two items.\nNeed to look up both.</reasoning>OK!"
+        )
+        reasoning, cleaned = _extract_reasoning(content)
+        assert "Customer wants two items." in reasoning
+        assert "Need to look up both." in reasoning
+        assert cleaned == "OK!"
+
+    def test_extract_reasoning_empty_content(self):
+        """_extract_reasoning should handle empty string."""
+        reasoning, cleaned = _extract_reasoning("")
+        assert reasoning == ""
+        assert cleaned == ""
+
+    def test_state_reasoning_field_defaults_empty(self, menu, empty_order):
+        """DriveThruState reasoning field should accept empty list."""
+        state = DriveThruState(
+            messages=[],
+            menu=menu,
+            current_order=empty_order,
+            reasoning=[],
+        )
+        assert state["reasoning"] == []
+
+    def test_state_reasoning_field_accumulates(self, menu, empty_order):
+        """DriveThruState reasoning field should be a list of strings."""
+        state = DriveThruState(
+            messages=[],
+            menu=menu,
+            current_order=empty_order,
+            reasoning=["[DIRECT] Greeting the customer."],
+        )
+        assert len(state["reasoning"]) == 1
+        assert state["reasoning"][0].startswith("[DIRECT]")

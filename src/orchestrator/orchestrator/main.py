@@ -7,10 +7,11 @@ Usage:
 import uuid
 
 from langchain_core.messages import HumanMessage, ToolMessage
+from langgraph.checkpoint.memory import MemorySaver
 from loguru import logger
 
 from .config import get_settings
-from .graph import graph
+from .graph import _builder
 from .logging import setup_logging
 from .models import Menu, Order
 
@@ -54,6 +55,9 @@ def main() -> None:
 
     # Create empty order
     order = Order()
+
+    # Compile graph with checkpointer for CLI conversation persistence
+    graph = _builder.compile(checkpointer=MemorySaver())
 
     # Session config for checkpointer
     session_id = f"cli-{uuid.uuid4()}"

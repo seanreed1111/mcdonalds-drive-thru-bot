@@ -64,7 +64,11 @@
       "WebFetch(domain:blog.langchain.com)",
       "WebFetch(domain:pub.towardsai.net)",
       "WebFetch(domain:www.ibm.com)",
-      "WebFetch(domain:www.datacamp.com)"
+      "WebFetch(domain:www.datacamp.com)",
+      "Bash(date:*)",
+      "Bash(curl:*)",
+      "Bash(git stash:*)",
+      "Bash(git reset:*)"
     ]
   }
 }
