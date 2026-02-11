@@ -278,9 +278,9 @@ __all__ = [
 ## Success Criteria
 
 ### Automated Verification:
-- [ ] File exists: `src/orchestrator/orchestrator/tools.py`
-- [ ] Python can import tools: `uv run --package orchestrator python -c "from orchestrator.tools import lookup_menu_item, add_item_to_order, get_current_order, finalize_order; print('OK')"`
-- [ ] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/tools.py`
+- [x] File exists: `src/orchestrator/orchestrator/tools.py`
+- [x] Python can import tools: `uv run --package orchestrator python -c "from orchestrator.tools import lookup_menu_item, add_item_to_order, get_current_order, finalize_order; print('OK')"`
+- [x] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/tools.py`
 
 ---
 

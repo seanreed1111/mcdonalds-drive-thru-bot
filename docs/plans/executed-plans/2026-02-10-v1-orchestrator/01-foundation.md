@@ -197,13 +197,13 @@ MISTRAL_API_KEY=your-mistral-api-key
 ## Success Criteria
 
 ### Automated Verification:
-- [ ] File exists: `src/orchestrator/orchestrator/__init__.py`
-- [ ] File exists: `src/orchestrator/orchestrator/config.py`
-- [ ] File exists: `src/orchestrator/orchestrator/logging.py`
-- [ ] Python can import the package: `uv run --package orchestrator python -c "from orchestrator import Item, Menu, Order, Size, CategoryName; print('OK')"`
-- [ ] Config loads with env vars: `uv run --package orchestrator python -c "from orchestrator.config import get_settings; print(get_settings().mistral_model)"`
-- [ ] Logging setup works: `uv run --package orchestrator python -c "from orchestrator.logging import setup_logging; setup_logging(); from loguru import logger; logger.info('test')"`
-- [ ] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/__init__.py src/orchestrator/orchestrator/config.py src/orchestrator/orchestrator/logging.py`
+- [x] File exists: `src/orchestrator/orchestrator/__init__.py`
+- [x] File exists: `src/orchestrator/orchestrator/config.py`
+- [x] File exists: `src/orchestrator/orchestrator/logging.py`
+- [x] Python can import the package: `uv run --package orchestrator python -c "from orchestrator import Item, Menu, Order, Size, CategoryName; print('OK')"`
+- [x] Config loads with env vars: `uv run --package orchestrator python -c "from orchestrator.config import get_settings; print(get_settings().mistral_model)"`
+- [x] Logging setup works: `uv run --package orchestrator python -c "from orchestrator.logging import setup_logging; setup_logging(); from loguru import logger; logger.info('test')"`
+- [x] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/__init__.py src/orchestrator/orchestrator/config.py src/orchestrator/orchestrator/logging.py`
 
 ---
 
