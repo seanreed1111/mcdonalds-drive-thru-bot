@@ -268,3 +268,7 @@ graph LR
 - `Order` - Collection of items for a customer order
 - `Location` - Restaurant location details
 - `Menu` - Full menu with items, loadable from JSON files
+
+## Documentation
+
+- [Langfuse Evaluations Tutorial](docs/evaluations/langfuse-evaluations-tutorial.md) — practical guide to evaluating LLM applications with Langfuse, using this chatbot as an example

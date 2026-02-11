@@ -10,7 +10,7 @@
 #   make setup                 Install all workspace dependencies
 # =============================================================================
 
-.PHONY: help chat dev setup test typecheck
+.PHONY: help chat dev setup test typecheck eval-seed eval
 .DEFAULT_GOAL := help
 
 # -----------------------------------------------------------------------------
@@ -53,6 +53,13 @@ help:
 	@echo ""
 	@echo "$(BOLD)typecheck$(NC) - Static type checking"
 	@echo "  $(GREEN)make typecheck$(NC)              Run ty type checker"
+	@echo ""
+	@echo "$(BOLD)eval-seed$(NC) - Seed evaluation dataset in Langfuse"
+	@echo "  $(GREEN)make eval-seed$(NC)"
+	@echo ""
+	@echo "$(BOLD)eval$(NC) - Run evaluation experiment"
+	@echo "  $(GREEN)make eval$(NC)                   Run with auto-generated name"
+	@echo "  $(GREEN)make eval ARGS='--run-name my-run'$(NC)   Run with custom name"
 	@echo ""
 	@echo "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)"
 	@echo ""
@@ -105,3 +112,16 @@ typecheck: ## Run ty type checker
 	@echo "$(BLUE)==> Running type checker (ty)...$(NC)"
 	uv run ty check
 	@echo "$(GREEN)==> Type checking complete!$(NC)"
+
+# =============================================================================
+# EVALUATION
+# =============================================================================
+eval-seed: ## Seed evaluation dataset in Langfuse
+	@echo "$(BLUE)==> Seeding evaluation dataset...$(NC)"
+	uv run --package orchestrator python scripts/seed_eval_dataset.py
+	@echo "$(GREEN)==> Dataset seeded!$(NC)"
+
+eval: ## Run evaluation experiment
+	@echo "$(BLUE)==> Running evaluation experiment...$(NC)"
+	uv run --package orchestrator python scripts/run_eval.py $(ARGS)
+	@echo "$(GREEN)==> Evaluation complete!$(NC)"
