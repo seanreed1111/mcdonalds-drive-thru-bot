@@ -9,6 +9,7 @@
 > **Related Documents:**
 > - [v0 State Design](../langgraph-state-design-v0.md) — Previous explicit state machine approach
 > - [v1 State Diagrams](./langgraph-state-diagrams-v1.md) — Visual diagrams for this design
+> - [v1 Context & State Management](./context-and-state-management-v1.md) — Design decisions for menu storage and order persistence
 
 ---
 
@@ -92,7 +93,7 @@ With the orchestrator pattern, the LLM handles this naturally:
 
 | Aspect | v0 (Explicit State Machine) | v1 (LLM Orchestrator) |
 |--------|----------------------------|----------------------|
-| **Graph nodes** | 12+ (load_menu, greet, await_input, parse_intent, parse_item, validate, add_item, reject_item, success_response, read_order, clarify, confirm_order, thank) | 3 (orchestrator, tools, end check) |
+| **Graph nodes** | 12+ (load_menu, greet, await_input, parse_intent, parse_item, validate, add_item, reject_item, success_response, read_order, clarify, confirm_order, thank) | 4 (orchestrator, tools, update_order, end check) |
 | **Routing logic** | Explicit conditional edges + intent enum + confidence gating | LLM decides via tool selection |
 | **Intent handling** | One intent per turn, classified via structured output | Multi-intent natural, LLM reasons freely |
 | **Structured outputs** | ParsedIntent, ParsedItemRequest, ValidationResult, CustomerResponse | Tool input schemas only (simpler) |
@@ -106,7 +107,7 @@ With the orchestrator pattern, the LLM handles this naturally:
 
 ## v1 Graph Architecture
 
-The entire graph is three conceptual steps in a loop:
+The graph is a four-node loop: orchestrator, tools, update_order, and conditional routing:
 
 ```
 START --> orchestrator --> should_continue?
@@ -115,6 +116,8 @@ START --> orchestrator --> should_continue?
               |                |
               |     Yes: execute tools
               |          |
+              |     update_order (process tool results → update current_order)
+              |          |
               +----------+
                          |
                     No: respond
@@ -122,7 +125,7 @@ START --> orchestrator --> should_continue?
                         END
 ```
 
-The `orchestrator` node is an LLM with tools bound. LangGraph's prebuilt `ToolNode` handles tool execution. The `should_continue` conditional edge checks whether the LLM wants to call more tools or is done responding.
+The `orchestrator` node is an LLM with tools bound. LangGraph's prebuilt `ToolNode` handles tool execution. The `update_order` node processes tool results and updates `current_order` in state (see [Context & State Management](./context-and-state-management-v1.md) for the full rationale). The `should_continue` conditional edge checks whether the LLM wants to call more tools or is done responding.
 
 ---
 
@@ -453,8 +456,13 @@ def orchestrator_node(state: DriveThruState) -> dict:
 The full graph in LangGraph:
 
 ```python
+import json
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
+from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.messages import ToolMessage
+from orchestrator.models import Order, Item, Modifier
+from orchestrator.enums import Size, CategoryName
 
 
 def should_continue(state: DriveThruState) -> str:
@@ -473,12 +481,53 @@ def should_continue(state: DriveThruState) -> str:
     return "respond"
 
 
+def update_order(state: DriveThruState) -> dict:
+    """Process tool results and update current_order.
+
+    Runs after every tool execution. Scans ToolMessages for
+    add_item_to_order results and applies them to the order
+    using Order.__add__ (merges duplicates, appends new items).
+    """
+    current_order = state["current_order"]
+    menu = state["menu"]
+
+    for msg in state["messages"]:
+        if not isinstance(msg, ToolMessage):
+            continue
+        if msg.name != "add_item_to_order":
+            continue
+
+        result = json.loads(msg.content) if isinstance(msg.content, str) else msg.content
+        if not result.get("added"):
+            continue
+
+        menu_item = next(
+            (i for i in menu.items if i.item_id == result["item_id"]), None
+        )
+        if not menu_item:
+            continue
+
+        new_item = Item(
+            item_id=result["item_id"],
+            name=result["item_name"],
+            category_name=CategoryName(result["category_name"]),
+            default_size=menu_item.default_size,
+            size=Size(result["size"]) if result.get("size") else None,
+            quantity=result["quantity"],
+            modifiers=[Modifier(**m) for m in result.get("modifiers", [])],
+        )
+        current_order = current_order + new_item  # Order.__add__
+
+    return {"current_order": current_order}
+
+
 # Build the graph
 tool_node = ToolNode(tools)
 
 builder = StateGraph(DriveThruState)
 builder.add_node("orchestrator", orchestrator_node)
 builder.add_node("tools", tool_node)
+builder.add_node("update_order", update_order)
 
 builder.add_edge(START, "orchestrator")
 builder.add_conditional_edges(
@@ -490,12 +539,16 @@ builder.add_conditional_edges(
         "end": END,
     },
 )
-builder.add_edge("tools", "orchestrator")
+builder.add_edge("tools", "update_order")          # tools → update_order
+builder.add_edge("update_order", "orchestrator")   # update_order → orchestrator
 
-graph = builder.compile()
+checkpointer = MemorySaver()
+graph = builder.compile(checkpointer=checkpointer)
 ```
 
-That's the entire graph. Compare this to v0's 12+ nodes and multiple conditional edges.
+That's the entire graph — 4 nodes. The `update_order` node bridges the gap between tool results (plain dicts) and actual state updates. Compare this to v0's 12+ nodes and multiple conditional edges.
+
+> **Why `update_order` instead of `Command`?** Tools stay as pure functions that return dicts — easy to unit test without mocking `InjectedToolCallId` or asserting `Command` structure. State update logic is centralized in one place. See [Context & State Management](./context-and-state-management-v1.md#chosen-approach-for-v1) for the full comparison.
 
 ---
 
@@ -714,17 +767,19 @@ The orchestrator pattern isn't always the right choice. Consider reverting to ex
 
 ### Persistence
 
-Same as v0 — use LangGraph's checkpointer for multi-turn conversations:
+The checkpointer automatically saves all state fields (`messages`, `menu`, `current_order`) after every node execution. When `graph.invoke()` is called with the same `thread_id`, state is fully restored — this is how the order persists across conversation turns.
 
 ```python
 from langgraph.checkpoint.memory import MemorySaver
 
-checkpointer = MemorySaver()
+checkpointer = MemorySaver()  # Dev only — use PostgresSaver for production
 graph = builder.compile(checkpointer=checkpointer)
 
 # Each conversation gets a thread_id
 config = {"configurable": {"thread_id": "drive-thru-session-123"}}
 ```
+
+The `update_order` node's state updates are persisted by the checkpointer just like any other node's updates. After `update_order` writes `{"current_order": updated_order}`, the checkpointer saves it, and the next `orchestrator` invocation sees the updated order in its system prompt.
 
 ### Streaming
 

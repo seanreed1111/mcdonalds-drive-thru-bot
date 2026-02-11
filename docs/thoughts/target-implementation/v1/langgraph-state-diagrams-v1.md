@@ -68,7 +68,7 @@ flowchart TD
     style Validate fill:#f59e0b,color:#000
 ```
 
-### v1: LLM Orchestrator (3 nodes)
+### v1: LLM Orchestrator (4 nodes)
 
 ```mermaid
 flowchart TD
@@ -80,13 +80,15 @@ flowchart TD
     ShouldContinue -->|"No (direct response)"| END([END])
     ShouldContinue -->|"finalize_order called"| END
 
-    Tools --> Orchestrator
+    Tools --> UpdateOrder["update_order<br/>(process results →<br/>update current_order)"]
+    UpdateOrder --> Orchestrator
 
     style START fill:#22c55e,color:#fff
     style END fill:#ef4444,color:#fff
     style Orchestrator fill:#8b5cf6,color:#fff
     style ShouldContinue fill:#f59e0b,color:#000
     style Tools fill:#3b82f6,color:#fff
+    style UpdateOrder fill:#10b981,color:#fff
 ```
 
 ---
@@ -106,7 +108,7 @@ flowchart TB
     subgraph LangGraph["LangGraph Application"]
         subgraph OrchestratorNode["Orchestrator Node"]
             LLM["LLM<br/>(gpt-4o-mini)"]
-            SystemPrompt["System Prompt<br/>(location + menu + order)"]
+            SystemPrompt["System Prompt<br/>(location + full menu + order)"]
         end
         subgraph ToolNode["Tool Node"]
             T1["lookup_menu_item"]
@@ -114,26 +116,30 @@ flowchart TB
             T3["get_current_order"]
             T4["finalize_order"]
         end
-        State["DriveThruState<br/>(messages, menu, order)"]
+        UpdateOrderNode["update_order<br/>(tool results → state)"]
+        State["DriveThruState<br/>(messages, menu, current_order)"]
     end
 
     subgraph Observability["Observability"]
         Langfuse["Langfuse"]
-        Checkpointer["Checkpointer"]
+        Checkpointer["Checkpointer<br/>(MemorySaver / PostgresSaver)"]
     end
 
     Input -->|"Customer message"| State
     MenuJSON -->|"Load via Menu.from_json_file()"| State
     State -->|"Full context"| LLM
-    SystemPrompt -->|"Location + menu + order"| LLM
+    SystemPrompt -->|"Location + full menu + order"| LLM
     LLM -->|"Tool calls"| ToolNode
-    ToolNode -->|"Tool results"| LLM
+    ToolNode -->|"Tool results (dicts)"| UpdateOrderNode
+    UpdateOrderNode -->|"Updated current_order"| State
+    State -->|"Updated context"| LLM
     LLM -->|"Response"| Output
     State -->|"Checkpoint"| Checkpointer
     LLM -->|"Traces"| Langfuse
 
     style OrchestratorNode fill:#f3e8ff,stroke:#8b5cf6
     style ToolNode fill:#dbeafe,stroke:#3b82f6
+    style UpdateOrderNode fill:#d1fae5,stroke:#10b981
 ```
 
 ---
@@ -148,11 +154,13 @@ flowchart TD
 
     subgraph OrchestratorLoop["Orchestrator Tool-Calling Loop"]
         Orchestrator["orchestrator_node<br/><i>LLM reasons + calls tools</i>"]
-        Tools["tool_node<br/><i>Executes tool calls</i>"]
+        Tools["tool_node<br/><i>Executes tool calls (pure functions)</i>"]
+        UpdateOrder["update_order<br/><i>Process tool results →<br/>update current_order via Order.__add__</i>"]
 
         Orchestrator --> Check{"should_continue()"}
         Check -->|"has tool_calls<br/>(not finalize)"| Tools
-        Tools --> Orchestrator
+        Tools --> UpdateOrder
+        UpdateOrder --> Orchestrator
     end
 
     Check -->|"no tool_calls<br/>(direct response)"| END([END])
@@ -162,6 +170,7 @@ flowchart TD
     style END fill:#ef4444,color:#fff
     style Orchestrator fill:#8b5cf6,color:#fff
     style Tools fill:#3b82f6,color:#fff
+    style UpdateOrder fill:#10b981,color:#fff
     style Check fill:#f59e0b,color:#000
     style OrchestratorLoop fill:#faf5ff,stroke:#c4b5fd,stroke-dasharray: 5 5
 ```
@@ -283,17 +292,21 @@ flowchart LR
         Reason["Reason about<br/>customer message"]
     end
 
-    subgraph Tools["Available Tools"]
+    subgraph Tools["Available Tools (pure functions)"]
         Lookup["lookup_menu_item<br/><i>Verify item exists</i>"]
-        Add["add_item_to_order<br/><i>Add validated item</i>"]
+        Add["add_item_to_order<br/><i>Validate + return item data</i>"]
         GetOrder["get_current_order<br/><i>Read back order</i>"]
         Finalize["finalize_order<br/><i>Complete order</i>"]
     end
 
-    subgraph Results["Tool Results"]
+    subgraph StateUpdate["update_order Node"]
+        UO["Process add results<br/>→ Order.__add__<br/>→ update current_order"]
+    end
+
+    subgraph Results["Tool Results (dicts)"]
         Found["✅ found: true<br/>item_id, name, category,<br/>default_size, modifiers"]
         NotFound["❌ found: false<br/>suggestions: [...]"]
-        Added["✅ added: true<br/>item_id, qty, size,<br/>modifiers (Order.__add__)"]
+        Added["✅ added: true<br/>item_id, qty, size,<br/>modifiers"]
         OrderSummary["📋 order_id, items,<br/>item_count (no price)"]
         Done["🏁 finalized: true<br/>order_id"]
     end
@@ -309,9 +322,11 @@ flowchart LR
     GetOrder --> OrderSummary
     Finalize --> Done
 
+    Added -->|"update_order processes"| UO
+    UO -->|"State updated"| Reason
+
     Found -->|"Proceed to add"| Reason
     NotFound -->|"Suggest alternatives"| Reason
-    Added -->|"Confirm to customer"| Reason
     OrderSummary -->|"Read back"| Reason
     Done -->|"Thank + end"| Reason
 
@@ -324,6 +339,7 @@ flowchart LR
     style NotFound fill:#fee2e2,stroke:#ef4444
     style Added fill:#dcfce7,stroke:#22c55e
     style Done fill:#dcfce7,stroke:#22c55e
+    style UO fill:#d1fae5,stroke:#10b981
 ```
 
 ---
@@ -337,25 +353,32 @@ sequenceDiagram
     participant C as Customer
     participant O as Orchestrator (LLM)
     participant T as Tools
+    participant U as update_order
 
-    Note over O: Graph starts, menu loaded via Menu.from_json_file()
+    Note over O: Graph starts, menu loaded via Menu.from_json_file()<br/>Full menu injected into system prompt (Option A)
 
     C->>O: "Hi, can I get an Egg McMuffin?"
 
     O->>O: Reason: greeting + order intent
     O->>T: lookup_menu_item("Egg McMuffin")
-    T-->>O: {found: true, item_id: "mcmuffin-egg-001",<br/>name: "Egg McMuffin", category_name: "breakfast",<br/>default_size: "regular", available_modifiers: [...]}
+    T-->>U: {found: true, item_id: "mcmuffin-egg-001",<br/>name: "Egg McMuffin", category_name: "breakfast",<br/>default_size: "regular", available_modifiers: [...]}
+    U-->>O: No order change (lookup only)
 
     O->>T: add_item_to_order(item_id="mcmuffin-egg-001",<br/>item_name="Egg McMuffin",<br/>category_name="breakfast", qty=1)
-    T-->>O: {added: true, size: "regular"}
+    T-->>U: {added: true, item_id: "mcmuffin-egg-001",<br/>item_name: "Egg McMuffin", size: "regular", qty: 1}
+    Note over U: Constructs Item, merges via Order.__add__<br/>current_order now has 1x Egg McMuffin
+    U-->>O: current_order updated
 
     O-->>C: "Hey there! Got one Egg McMuffin.<br/>Anything else?"
+
+    Note over O: Checkpointer saves state (messages + current_order)
 
     C->>O: "No, that's all"
 
     O->>O: Reason: customer is done
     O->>T: get_current_order()
-    T-->>O: {order_id: "a1b2c3...",<br/>items: [{name: "Egg McMuffin", qty: 1}],<br/>item_count: 1}
+    T-->>U: {order_id: "a1b2c3...",<br/>items: [{name: "Egg McMuffin", qty: 1}],<br/>item_count: 1}
+    U-->>O: No order change (read only)
 
     O-->>C: "Your order is one Egg McMuffin.<br/>Your total will be at the window.<br/>Sound good?"
 
@@ -380,6 +403,7 @@ sequenceDiagram
     participant C as Customer
     participant O as Orchestrator (LLM)
     participant T as Tools
+    participant U as update_order
 
     C->>O: "Two hash browns, a large coffee,<br/>and what sandwiches do you have?"
 
@@ -390,18 +414,21 @@ sequenceDiagram
         O->>T: lookup_menu_item("coffee")
     end
 
-    T-->>O: hash brown: {found: true, item_id: "hashbrown-001",<br/>category_name: "snacks-sides", default_size: "regular"}
-    T-->>O: coffee: {found: true, item_id: "coffee-001",<br/>category_name: "beverages", default_size: "medium"}
+    T-->>U: hash brown: {found: true, item_id: "hashbrown-001",<br/>category_name: "snacks-sides", default_size: "regular"}
+    T-->>U: coffee: {found: true, item_id: "coffee-001",<br/>category_name: "beverages", default_size: "medium"}
+    U-->>O: No order change (lookups only)
 
     par Parallel adds
         O->>T: add_item_to_order(item_id="hashbrown-001",<br/>item_name="Hash Brown",<br/>category_name="snacks-sides", qty=2)
         O->>T: add_item_to_order(item_id="coffee-001",<br/>item_name="Coffee",<br/>category_name="beverages", qty=1, size="large")
     end
 
-    T-->>O: {added: true, size: "regular"}
-    T-->>O: {added: true, size: "large"}
+    T-->>U: {added: true, qty: 2, size: "regular"}
+    T-->>U: {added: true, qty: 1, size: "large"}
+    Note over U: Processes BOTH add results sequentially.<br/>Order.__add__ for each: 2x Hash Brown + 1x Coffee (large)
+    U-->>O: current_order updated with both items
 
-    O->>O: Reason: answer menu question<br/>from system prompt context (no tool needed)
+    O->>O: Reason: answer menu question<br/>from full menu in system prompt (Option A — no tool needed)
 
     O-->>C: "Got it — two hash browns and a large coffee!<br/>For sandwiches, we've got the Egg McMuffin,<br/>Sausage McMuffin, and McGriddle.<br/>Want to add one?"
 
@@ -552,14 +579,15 @@ stateDiagram-v2
     state Orchestrating {
         [*] --> LLMReasoning
         LLMReasoning --> ToolCalling: Tool calls needed
-        ToolCalling --> ToolExecuting: Execute tools
-        note right of ToolExecuting: Tools use item_id, category_name,\nModifier objects, Size enum.\nOrder.__add__ merges items into order\n(duplicates get quantities combined).
-        ToolExecuting --> LLMReasoning: Results returned
+        ToolCalling --> ToolExecuting: Execute tools (pure functions, return dicts)
+        ToolExecuting --> UpdatingOrder: update_order node processes results
+        note right of UpdatingOrder: Scans ToolMessages for add_item_to_order.\nConstructs Item, merges via Order.__add__.\nCheckpointer persists updated current_order.
+        UpdatingOrder --> LLMReasoning: State updated, back to orchestrator
         LLMReasoning --> Responding: No more tool calls
         LLMReasoning --> Finalizing: finalize_order called
     }
 
-    Responding --> WaitingForInput: Response sent to customer
+    Responding --> WaitingForInput: Response sent to customer<br/>(checkpointer saves state)
     Finalizing --> [*]: Order complete (order_id preserved)
 ```
 

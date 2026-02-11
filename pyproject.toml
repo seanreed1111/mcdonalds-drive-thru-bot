@@ -39,7 +39,11 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.ty.src]
-include = ["src/orchestrator"]
+include = ["src", "tests", "scripts"]
+exclude = [".venv", "dist", "build", "*.egg-info"]
 
 [tool.ty.environment]
 python-version = "3.12"
+
+[tool.ty.rules]
+all = "warn"
