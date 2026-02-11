@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0](https://github.com/seanreed1111/mcdonalds-drive-thru-bot/pull/7) - 2026-02-11
+
+### Added
+- Add `RetryPolicy` to orchestrator LLM node with exponential backoff (5 attempts, 1s–30s, jitter) (#7)
+- Add `docs/retries-rate-limits.md` documenting retry strategy for the orchestrator (#7)
+
+### Changed
+- Reorganize docs: flatten `planning-docs/thoughts/target-implementation/` into `docs/` and `planning-docs/thoughts/` (#7)
+- Remove completed Langfuse evaluation plan (#7)
+
 ## [0.3.0](https://github.com/seanreed1111/mcdonalds-drive-thru-bot/pull/6) - 2026-02-11
 
 ### Added
