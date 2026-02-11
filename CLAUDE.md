@@ -77,6 +77,15 @@ date -Iseconds           # Get current date
 - **`getLangfuseDocsPage`**: If you already know the specific docs page you need, fetch it directly instead of searching.
 - Make multiple small, focused queries rather than one broad query.
 
+## Markdown File Dates
+
+When creating or editing any markdown file (except CLAUDE.md itself), add a date comment at the very top of the file:
+
+- **New file**: Add `<!-- created: YYYY-MM-DD -->` as the first line.
+- **Existing file**: If it already has a `<!-- created: ... -->` line, replace it with `<!-- modified: YYYY-MM-DD -->`. If it has a `<!-- modified: ... -->` line, update the date.
+- Each file should have **exactly one** date line — either `created` or `modified`, never both.
+- Use `date -Iseconds` to get the current date.
+
 ## Agent Behavior: Scope and Confirmation
 
 **Do only what is explicitly requested.** Do not add extra features, refactors, or "improvements" beyond the specific ask.

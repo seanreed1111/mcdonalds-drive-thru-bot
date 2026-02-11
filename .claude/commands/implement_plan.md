@@ -23,6 +23,7 @@ If no plan path provided, ask for one.
 
 Plans are carefully designed, but reality can be messy. Your job is to:
 - Follow the plan's intent while adapting to what you find
+- Ask questions to user if something is unclear or ambiguous
 - Implement each phase fully before moving to the next
 - Verify your work makes sense in the broader codebase context
 - Update checkboxes in the plan as you complete sections
@@ -44,7 +45,7 @@ If you encounter a mismatch:
 ## Verification Approach
 
 After implementing a phase:
-- Run the success criteria checks if any(usually `make check test` covers everything)
+- Run the success criteria checks if any
 - Fix any issues before proceeding
 - Update your progress in both the plan and your todos
 - Check off completed items in the plan file itself using Edit
