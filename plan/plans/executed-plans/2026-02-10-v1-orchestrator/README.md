@@ -62,9 +62,9 @@ A working chatbot CLI where a user can:
 All interactions are traced in Langfuse. Configuration is managed via `.env` file.
 
 **Success Criteria:**
-- [ ] `uv run --package orchestrator python -m orchestrator.main` starts the chatbot CLI
-- [ ] LangGraph Studio can load the graph via `langgraph.json`
-- [ ] Smoke test passes: `uv run --package orchestrator pytest tests/orchestrator/test_smoke.py`
+- [x] `uv run --package orchestrator python -m orchestrator.main` starts the chatbot CLI
+- [x] LangGraph Studio can load the graph via `langgraph.json`
+- [x] Smoke test passes: `uv run --package orchestrator pytest tests/orchestrator/test_smoke.py`
 - [ ] Multi-turn conversation works: greet → order → read back → finalize
 - [ ] Langfuse traces appear for each conversation turn
 
@@ -203,11 +203,11 @@ graph TD
 
 ## Task Checklist
 
-- [ ] [Phase 1: Foundation](./01-foundation.md) — `__init__.py` + `config.py`
-- [ ] [Phase 2: Tools](./02-tools.md) — 4 tool functions
-- [ ] [Phase 3: Graph](./03-graph.md) — State schema + orchestrator node + graph construction
-- [ ] [Phase 4: CLI + Langfuse](./04-cli-langfuse.md) — `main.py` entry point
-- [ ] [Phase 5: Smoke Test + Test Ideas](./05-smoke-test.md) — `test_smoke.py` + `testing-ideas-v1.md`
+- [x] [Phase 1: Foundation](./01-foundation.md) — `__init__.py` + `config.py`
+- [x] [Phase 2: Tools](./02-tools.md) — 4 tool functions
+- [x] [Phase 3: Graph](./03-graph.md) — State schema + orchestrator node + graph construction
+- [x] [Phase 4: CLI + Langfuse](./04-cli-langfuse.md) — `main.py` entry point
+- [x] [Phase 5: Smoke Test + Test Ideas](./05-smoke-test.md) — `test_smoke.py` + `testing-ideas-v1.md`
 
 ## Phase Files
 

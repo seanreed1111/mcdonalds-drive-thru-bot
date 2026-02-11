@@ -391,11 +391,11 @@ if __name__ == "__main__":
 ## Success Criteria
 
 ### Automated Verification:
-- [ ] File exists: `src/orchestrator/orchestrator/main.py`
-- [ ] File exists: `src/orchestrator/orchestrator/__main__.py`
-- [ ] File updated: `scripts/seed_langfuse_prompts.py` includes `drive-thru/orchestrator` prompt
-- [ ] Python can import the module (no API key needed — graph uses lazy LLM init): `uv run --package orchestrator python -c "from orchestrator.main import main; print('OK')"`
-- [ ] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/main.py src/orchestrator/orchestrator/__main__.py scripts/seed_langfuse_prompts.py`
+- [x] File exists: `src/orchestrator/orchestrator/main.py`
+- [x] File exists: `src/orchestrator/orchestrator/__main__.py`
+- [x] File updated: `scripts/seed_langfuse_prompts.py` includes `drive-thru/orchestrator` prompt
+- [x] Python can import the module (no API key needed — graph uses lazy LLM init): `uv run --package orchestrator python -c "from orchestrator.main import main; print('OK')"`
+- [x] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/main.py src/orchestrator/orchestrator/__main__.py scripts/seed_langfuse_prompts.py`
 - [ ] Seed script can be run (requires Langfuse credentials): `uv run --package orchestrator python scripts/seed_langfuse_prompts.py`
 
 ### Manual Verification:

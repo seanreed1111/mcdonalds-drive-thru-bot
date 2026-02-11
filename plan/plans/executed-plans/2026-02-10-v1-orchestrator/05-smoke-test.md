@@ -367,11 +367,11 @@ These test each tool function directly with mock `InjectedState`:
 ## Success Criteria
 
 ### Automated Verification:
-- [ ] File exists: `tests/__init__.py`
-- [ ] Test directory exists: `tests/orchestrator/`
-- [ ] All smoke tests pass: `uv run --package orchestrator pytest tests/orchestrator/test_smoke.py -v`
-- [ ] Ruff passes: `uv run ruff check tests/orchestrator/`
-- [ ] Testing ideas doc exists: `docs/thoughts/target-implementation/v1/testing-ideas-v1.md`
+- [x] File exists: `tests/__init__.py`
+- [x] Test directory exists: `tests/orchestrator/`
+- [x] All smoke tests pass: `uv run --package orchestrator pytest tests/orchestrator/test_smoke.py -v`
+- [x] Ruff passes: `uv run ruff check tests/orchestrator/`
+- [x] Testing ideas doc exists: `docs/thoughts/target-implementation/v1/testing-ideas-v1.md`
 
 ---
 

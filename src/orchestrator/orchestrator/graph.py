@@ -1,64 +1,3 @@
-# Phase 3: Graph
-
-<- [Back to Main Plan](./README.md)
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Context](#context)
-- [Dependencies](#dependencies)
-- [Changes Required](#changes-required)
-- [Success Criteria](#success-criteria)
-
-## Overview
-
-Create `graph.py` containing:
-1. `DriveThruState` — LangGraph state schema (extends `MessagesState`)
-2. `orchestrator_node` — LLM reasoning node that fetches its system prompt from Langfuse
-3. `should_continue` — Conditional edge function (after orchestrator)
-4. `update_order` — Node that processes tool results and updates `current_order`
-5. `should_end_after_update` — Conditional edge function (after update_order, checks for finalize)
-6. `graph` — The compiled LangGraph graph (exported for `langgraph.json`)
-
-The system prompt is stored in Langfuse as a managed prompt (`drive-thru/orchestrator`). The orchestrator node fetches it at startup and compiles it with runtime variables (location, menu, order) each turn.
-
-## Context
-
-Before starting, read these files:
-- `src/orchestrator/orchestrator/tools.py` — All 4 tool functions (created in Phase 2)
-- `src/orchestrator/orchestrator/models.py` — Item, Modifier, Order, Menu, Location models
-- `src/orchestrator/orchestrator/enums.py` — Size, CategoryName
-- `src/orchestrator/orchestrator/config.py` — Settings class (created in Phase 1)
-- `docs/thoughts/target-implementation/v1/langgraph-state-design-v1.md` — Graph construction section (lines 456-547), orchestrator node (lines 368-451)
-- `docs/thoughts/target-implementation/v1/context-and-state-management-v1.md` — Chosen approach (lines 623-899)
-- `langgraph.json` — Confirms graph export path: `./src/orchestrator/orchestrator/graph.py:graph`
-
-## Dependencies
-
-**Depends on:** Phase 1 (Foundation), Phase 2 (Tools)
-**Required by:** Phase 4 (CLI + Langfuse)
-
-## Changes Required
-
-### 3.1: Create `graph.py`
-**File:** `src/orchestrator/orchestrator/graph.py`
-**Action:** CREATE
-
-**What this does:** Defines the complete LangGraph graph with nodes (orchestrator, tools, update_order) and conditional routing. The orchestrator node uses Mistral AI via `ChatMistralAI` with tools bound. The system prompt is fetched from Langfuse prompt management.
-
-**Important design decisions (implemented in the code below):**
-
-1. **Lazy LLM initialization:** The LLM (`ChatMistralAI`) and tool binding are created lazily via `_get_orchestrator_llm()` with `@lru_cache`. This ensures `graph.py` can be imported without `MISTRAL_API_KEY` set — the API key is only required when the graph is actually invoked. This is critical for tests and `__init__.py` imports to work without credentials.
-
-2. **Langfuse prompt management:** The system prompt template is fetched from Langfuse (`drive-thru/orchestrator` prompt with `production` label). If Langfuse is unavailable, a hardcoded fallback is used. This allows prompt iteration without code changes.
-
-3. **Template variable substitution:** Uses simple `str.replace()` with `{{variable}}` syntax (matching Langfuse's template format). Variables: `location_name`, `location_address`, `menu_items`, `current_order`.
-
-4. **`finalize_order` routing:** All tool calls (including `finalize_order`) route through the normal `tools` → `update_order` path. After `update_order`, a conditional edge (`should_end_after_update`) checks whether `finalize_order` was called in the latest batch of tool messages. If so, the graph routes to `END`. This ensures every tool call produces a proper `ToolMessage` response (no dangling tool_calls in message history).
-
-5. **`update_order` scans only recent messages:** It only processes `ToolMessage`s that appear after the last `AIMessage` (the most recent orchestrator output). This prevents re-processing old `add_item_to_order` results from previous turns, which would incorrectly inflate quantities.
-
-```python
 """LangGraph drive-thru orchestrator graph (v1).
 
 4-node graph: orchestrator -> tools -> update_order -> orchestrator (loop).
@@ -166,7 +105,7 @@ def _get_system_prompt_template() -> str:
         langfuse = Langfuse(
             public_key=settings.langfuse_public_key,
             secret_key=settings.langfuse_secret_key,
-            host=settings.langfuse_host,
+            host=settings.langfuse_base_url,
         )
         prompt = langfuse.get_prompt(PROMPT_NAME, label="production")
         logger.info("Fetched system prompt from Langfuse: {}", PROMPT_NAME)
@@ -202,7 +141,11 @@ def _get_orchestrator_llm():
     (important for tests and __init__.py imports).
     """
     settings = get_settings()
-    logger.info("Initializing LLM: model={}, temperature={}", settings.mistral_model, settings.mistral_temperature)
+    logger.info(
+        "Initializing LLM: model={}, temperature={}",
+        settings.mistral_model,
+        settings.mistral_temperature,
+    )
     llm = ChatMistralAI(
         model=settings.mistral_model,
         temperature=settings.mistral_temperature,
@@ -265,7 +208,10 @@ def orchestrator_node(state: DriveThruState) -> dict:
     response = _get_orchestrator_llm().invoke(messages)
 
     if response.tool_calls:
-        logger.info("Orchestrator requesting tools: {}", [tc["name"] for tc in response.tool_calls])
+        logger.info(
+            "Orchestrator requesting tools: {}",
+            [tc["name"] for tc in response.tool_calls],
+        )
     else:
         logger.info("Orchestrator responding directly (no tool calls)")
 
@@ -284,7 +230,9 @@ def should_continue(state: DriveThruState) -> str:
     last_message = state["messages"][-1]
 
     if last_message.tool_calls:
-        logger.debug("should_continue -> tools ({} calls)", len(last_message.tool_calls))
+        logger.debug(
+            "should_continue -> tools ({} calls)", len(last_message.tool_calls)
+        )
         return "tools"
 
     # No tool calls — LLM is responding directly
@@ -318,9 +266,7 @@ def update_order(state: DriveThruState) -> dict:
             continue
 
         result = (
-            json.loads(msg.content)
-            if isinstance(msg.content, str)
-            else msg.content
+            json.loads(msg.content) if isinstance(msg.content, str) else msg.content
         )
         if not result.get("added"):
             continue
@@ -341,9 +287,15 @@ def update_order(state: DriveThruState) -> dict:
             modifiers=[Modifier(**m) for m in result.get("modifiers", [])],
         )
         current_order = current_order + new_item
-        logger.info("update_order: added {}x {} to order", result["quantity"], result["item_name"])
+        logger.info(
+            "update_order: added {}x {} to order",
+            result["quantity"],
+            result["item_name"],
+        )
 
-    logger.debug("update_order complete: order now has {} items", len(current_order.items))
+    logger.debug(
+        "update_order complete: order now has {} items", len(current_order.items)
+    )
     return {"current_order": current_order}
 
 
@@ -407,17 +359,3 @@ _builder.add_conditional_edges(
 
 _checkpointer = MemorySaver()
 graph = _builder.compile(checkpointer=_checkpointer)
-```
-
-## Success Criteria
-
-### Automated Verification:
-- [ ] File exists: `src/orchestrator/orchestrator/graph.py`
-- [ ] Python can import the graph (no API key needed): `uv run --package orchestrator python -c "from orchestrator.graph import graph, DriveThruState; print('OK')"`
-- [ ] Graph has expected nodes: `uv run --package orchestrator python -c "from orchestrator.graph import graph; print(graph.get_graph().nodes)"`
-- [ ] Ruff passes: `uv run ruff check src/orchestrator/orchestrator/graph.py`
-- [ ] `langgraph.json` graph path resolves: the `graph` variable at module level is a compiled `CompiledStateGraph`
-
----
-
-<- [Back to Main Plan](./README.md)
