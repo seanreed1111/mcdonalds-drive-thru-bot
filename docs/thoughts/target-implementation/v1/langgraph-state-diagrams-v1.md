@@ -106,7 +106,7 @@ flowchart TB
     subgraph LangGraph["LangGraph Application"]
         subgraph OrchestratorNode["Orchestrator Node"]
             LLM["LLM<br/>(gpt-4o-mini)"]
-            SystemPrompt["System Prompt<br/>(menu + order context)"]
+            SystemPrompt["System Prompt<br/>(location + menu + order)"]
         end
         subgraph ToolNode["Tool Node"]
             T1["lookup_menu_item"]
@@ -123,9 +123,9 @@ flowchart TB
     end
 
     Input -->|"Customer message"| State
-    MenuJSON -->|"Load on start"| State
+    MenuJSON -->|"Load via Menu.from_json_file()"| State
     State -->|"Full context"| LLM
-    SystemPrompt -->|"Menu + order"| LLM
+    SystemPrompt -->|"Location + menu + order"| LLM
     LLM -->|"Tool calls"| ToolNode
     ToolNode -->|"Tool results"| LLM
     LLM -->|"Response"| Output
@@ -170,7 +170,7 @@ flowchart TD
 
 ## State Schema
 
-Comparison of v0 and v1 state schemas.
+Comparison of v0 and v1 state schemas, with v1 expanded to show actual Pydantic model fields.
 
 ```mermaid
 classDiagram
@@ -194,18 +194,82 @@ classDiagram
     }
 
     class Menu {
+        +str menu_id
+        +str menu_name
+        +str menu_version
+        +Location location
         +list~Item~ items
+        +from_json_file(path) Menu$
+        +from_dict(data) Menu$
+    }
+
+    class Location {
+        +str id
+        +str name
+        +str address
+        +str city
+        +str state
+        +str zip
+        +str country
     }
 
     class Order {
+        +str order_id  «uuid»
         +list~Item~ items
+        +__add__(Item) Order
+    }
+
+    class Item {
+        +str item_id
+        +str name
+        +CategoryName category_name
+        +Size default_size
+        +Size|None size
+        +int quantity  «ge=1»
+        +list~Modifier~ modifiers
+        +list~Modifier~ available_modifiers
+        +__add__(other) Item
+    }
+
+    class Modifier {
+        +str modifier_id
+        +str name
+    }
+
+    class Size {
+        <<StrEnum>>
+        SNACK
+        SMALL
+        MEDIUM
+        LARGE
+        REGULAR
+    }
+
+    class CategoryName {
+        <<StrEnum>>
+        BREAKFAST
+        BEEF_PORK
+        CHICKEN_FISH
+        SALADS
+        SNACKS_SIDES
+        DESSERTS
+        BEVERAGES
+        COFFEE_TEA
+        SMOOTHIES_SHAKES
     }
 
     DriveThruState_v1 --> Menu
     DriveThruState_v1 --> Order
-    Menu --> Item
-    Order --> Item
+    Menu --> Location
+    Menu --> "many" Item : items
+    Order --> "many" Item : items
+    Item --> Size : default_size / size
+    Item --> CategoryName : category_name
+    Item --> "many" Modifier : modifiers
+    Item --> "many" Modifier : available_modifiers
 ```
+
+> **Note:** `Item` serves dual purpose — in `Menu.items` the `available_modifiers` list defines what's possible; in `Order.items` the `modifiers` list captures customer selections. There is no `price` field on `Item`.
 
 ---
 
@@ -227,11 +291,11 @@ flowchart LR
     end
 
     subgraph Results["Tool Results"]
-        Found["✅ found: true<br/>name, price, sizes"]
+        Found["✅ found: true<br/>item_id, name, category,<br/>default_size, modifiers"]
         NotFound["❌ found: false<br/>suggestions: [...]"]
-        Added["✅ added: true<br/>item details"]
-        OrderSummary["📋 items, total"]
-        Done["🏁 finalized: true"]
+        Added["✅ added: true<br/>item_id, qty, size,<br/>modifiers (Order.__add__)"]
+        OrderSummary["📋 order_id, items,<br/>item_count (no price)"]
+        Done["🏁 finalized: true<br/>order_id"]
     end
 
     Reason -->|"Customer orders item"| Lookup
@@ -274,16 +338,16 @@ sequenceDiagram
     participant O as Orchestrator (LLM)
     participant T as Tools
 
-    Note over O: Graph starts, menu loaded into state
+    Note over O: Graph starts, menu loaded via Menu.from_json_file()
 
     C->>O: "Hi, can I get an Egg McMuffin?"
 
     O->>O: Reason: greeting + order intent
     O->>T: lookup_menu_item("Egg McMuffin")
-    T-->>O: {found: true, name: "Egg McMuffin", price: 4.49}
+    T-->>O: {found: true, item_id: "mcmuffin-egg-001",<br/>name: "Egg McMuffin", category_name: "breakfast",<br/>default_size: "regular", available_modifiers: [...]}
 
-    O->>T: add_item_to_order("Egg McMuffin", qty=1)
-    T-->>O: {added: true}
+    O->>T: add_item_to_order(item_id="mcmuffin-egg-001",<br/>item_name="Egg McMuffin",<br/>category_name="breakfast", qty=1)
+    T-->>O: {added: true, size: "regular"}
 
     O-->>C: "Hey there! Got one Egg McMuffin.<br/>Anything else?"
 
@@ -291,14 +355,14 @@ sequenceDiagram
 
     O->>O: Reason: customer is done
     O->>T: get_current_order()
-    T-->>O: {items: [{name: "Egg McMuffin", qty: 1}], total: 4.49}
+    T-->>O: {order_id: "a1b2c3...",<br/>items: [{name: "Egg McMuffin", qty: 1}],<br/>item_count: 1}
 
-    O-->>C: "Your order is one Egg McMuffin<br/>for $4.49. Sound good?"
+    O-->>C: "Your order is one Egg McMuffin.<br/>Your total will be at the window.<br/>Sound good?"
 
     C->>O: "Yep!"
 
     O->>T: finalize_order()
-    T-->>O: {finalized: true}
+    T-->>O: {finalized: true, order_id: "a1b2c3..."}
 
     O-->>C: "You're all set! Pull up to the<br/>next window. Have a great day!"
 
@@ -317,7 +381,7 @@ sequenceDiagram
     participant O as Orchestrator (LLM)
     participant T as Tools
 
-    C->>O: "Two hash browns, a large coffee,<br/>and what's your cheapest sandwich?"
+    C->>O: "Two hash browns, a large coffee,<br/>and what sandwiches do you have?"
 
     O->>O: Reason: 2 items + 1 question
 
@@ -326,22 +390,22 @@ sequenceDiagram
         O->>T: lookup_menu_item("coffee")
     end
 
-    T-->>O: hash brown: {found: true, price: 2.19}
-    T-->>O: coffee: {found: true, price: 1.89}
+    T-->>O: hash brown: {found: true, item_id: "hashbrown-001",<br/>category_name: "snacks-sides", default_size: "regular"}
+    T-->>O: coffee: {found: true, item_id: "coffee-001",<br/>category_name: "beverages", default_size: "medium"}
 
     par Parallel adds
-        O->>T: add_item_to_order("Hash Brown", qty=2)
-        O->>T: add_item_to_order("Coffee", qty=1, size="large")
+        O->>T: add_item_to_order(item_id="hashbrown-001",<br/>item_name="Hash Brown",<br/>category_name="snacks-sides", qty=2)
+        O->>T: add_item_to_order(item_id="coffee-001",<br/>item_name="Coffee",<br/>category_name="beverages", qty=1, size="large")
     end
 
-    T-->>O: {added: true}
-    T-->>O: {added: true}
+    T-->>O: {added: true, size: "regular"}
+    T-->>O: {added: true, size: "large"}
 
-    O->>O: Reason: answer menu question from context
+    O->>O: Reason: answer menu question<br/>from system prompt context (no tool needed)
 
-    O-->>C: "Got it — two hash browns and a large coffee!<br/>Our cheapest sandwich is the Sausage McMuffin<br/>at $3.29. Want to add one?"
+    O-->>C: "Got it — two hash browns and a large coffee!<br/>For sandwiches, we've got the Egg McMuffin,<br/>Sausage McMuffin, and McGriddle.<br/>Want to add one?"
 
-    Note over O: All 3 intents handled in ONE turn
+    Note over O: All 3 intents handled in ONE turn<br/>(no prices quoted — not in model)
 ```
 
 ---
@@ -378,23 +442,31 @@ Internal logic of how the orchestrator decides what to do.
 flowchart TD
     Input["Customer Message"] --> Orchestrator
 
-    Orchestrator --> Analyze["LLM analyzes message<br/>in context of:<br/>• conversation history<br/>• current menu<br/>• current order"]
+    Orchestrator --> Analyze["LLM analyzes message<br/>in context of:<br/>• conversation history<br/>• current menu (with categories, sizes)<br/>• current order (with modifiers)<br/>• location info"]
 
     Analyze --> WhatToDo{"What does the<br/>customer want?"}
 
     WhatToDo -->|"Order an item"| LookupFirst["Call lookup_menu_item"]
-    WhatToDo -->|"Ask about menu"| AnswerFromContext["Answer from<br/>menu in system prompt"]
+    WhatToDo -->|"Ask about menu"| AnswerFromContext["Answer from<br/>menu in system prompt<br/>(no prices available)"]
+    WhatToDo -->|"Ask about price"| NoPrice["'Your total will be<br/>at the window'"]
     WhatToDo -->|"Check their order"| CallGetOrder["Call get_current_order"]
     WhatToDo -->|"Done ordering"| ReadBack["Read back order,<br/>then call finalize_order"]
     WhatToDo -->|"Greeting/chitchat"| Respond["Respond directly<br/>(no tools needed)"]
     WhatToDo -->|"Multiple things"| HandleAll["Handle all via<br/>multiple tool calls"]
 
     LookupFirst --> Found{"Item found?"}
-    Found -->|Yes| CallAdd["Call add_item_to_order"]
+    Found -->|Yes| HasMods{"Customer wants<br/>modifiers?"}
     Found -->|No| SuggestAlt["Suggest alternatives<br/>from tool result"]
 
-    CallAdd --> ConfirmToCustomer["Confirm item added"]
+    HasMods -->|"Yes (valid modifier)"| CallAddMod["Call add_item_to_order<br/>(item_id, name, category,<br/>qty, size, modifiers)"]
+    HasMods -->|"Yes (invalid modifier)"| RejectMod["'That modification isn't<br/>available for this item'"]
+    HasMods -->|No| CallAdd["Call add_item_to_order<br/>(item_id, name, category,<br/>qty, size)"]
+
+    CallAdd --> ConfirmToCustomer["Confirm item added<br/>(Order.__add__ merges dups)"]
+    CallAddMod --> ConfirmToCustomer
     SuggestAlt --> RespondToCustomer["Respond with suggestions"]
+    RejectMod --> RespondToCustomer
+    NoPrice --> RespondToCustomer
     AnswerFromContext --> RespondToCustomer
     CallGetOrder --> RespondToCustomer
     ReadBack --> EndGraph["Graph ends"]
@@ -407,10 +479,13 @@ flowchart TD
     style Orchestrator fill:#8b5cf6,color:#fff
     style WhatToDo fill:#f59e0b,color:#000
     style Found fill:#f59e0b,color:#000
+    style HasMods fill:#f59e0b,color:#000
     style EndGraph fill:#ef4444,color:#fff
+    style NoPrice fill:#fee2e2,stroke:#ef4444
 
     style LookupFirst fill:#dbeafe,stroke:#3b82f6
     style CallAdd fill:#dbeafe,stroke:#3b82f6
+    style CallAddMod fill:#dbeafe,stroke:#3b82f6
     style CallGetOrder fill:#dbeafe,stroke:#3b82f6
 ```
 
@@ -438,10 +513,10 @@ flowchart TB
     end
 
     subgraph v1_trace["v1 Trace (cleaner)"]
-        v1_root["Root Span"]
+        v1_root["Root Span<br/><i>order_id: a1b2c3...</i>"]
         v1_orch1["orchestrator (turn 1)"]
-        v1_lookup["tool: lookup_menu_item"]
-        v1_add_tool["tool: add_item_to_order"]
+        v1_lookup["tool: lookup_menu_item<br/><i>returns item_id, category,<br/>default_size, modifiers</i>"]
+        v1_add_tool["tool: add_item_to_order<br/><i>item_id, qty, size,<br/>modifier objects</i>"]
         v1_orch2["orchestrator (turn 2)"]
 
         v1_root --> v1_orch1
@@ -466,7 +541,7 @@ The v1 state machine is intentionally minimal.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Ready: Graph initialized with menu
+    [*] --> Ready: Menu loaded via Menu.from_json_file(),<br/>Order created with auto UUID
 
     state Ready {
         [*] --> WaitingForInput
@@ -478,13 +553,14 @@ stateDiagram-v2
         [*] --> LLMReasoning
         LLMReasoning --> ToolCalling: Tool calls needed
         ToolCalling --> ToolExecuting: Execute tools
+        note right of ToolExecuting: Tools use item_id, category_name,\nModifier objects, Size enum.\nOrder.__add__ merges items into order\n(duplicates get quantities combined).
         ToolExecuting --> LLMReasoning: Results returned
         LLMReasoning --> Responding: No more tool calls
         LLMReasoning --> Finalizing: finalize_order called
     }
 
     Responding --> WaitingForInput: Response sent to customer
-    Finalizing --> [*]: Order complete
+    Finalizing --> [*]: Order complete (order_id preserved)
 ```
 
 ---

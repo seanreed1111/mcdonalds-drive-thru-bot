@@ -11,7 +11,8 @@
       "Bash(winget uninstall:*)",
       "Bash(cmd.exe:*)",
       "Bash(/c/ProgramData/chocolatey/bin/choco.exe install:*)",
-      "Bash(/c/ProgramData/chocolatey/bin/make.exe:*)"
+      "Bash(/c/ProgramData/chocolatey/bin/make.exe:*)",
+      "mcp__langfuse-docs__searchLangfuseDocs"
     ]
   }
 }

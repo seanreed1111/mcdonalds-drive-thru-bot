@@ -133,7 +133,7 @@ The state is dramatically simpler than v0:
 ```python
 from typing import Annotated
 from langgraph.graph import MessagesState
-from models import Order, Menu
+from orchestrator.models import Order, Menu
 
 
 class DriveThruState(MessagesState):
@@ -151,6 +151,42 @@ class DriveThruState(MessagesState):
 - Removed `is_order_complete` — the orchestrator calls `finalize_order` when done, which is the signal to end.
 - Uses `MessagesState` base class — provides the `messages` field with the proper add-message reducer built in.
 
+### Pydantic Model Reference
+
+The state references models from the `orchestrator` package. Key details:
+
+**`Menu`** — Rich model with location metadata:
+- `menu_id`, `menu_name`, `menu_version` — menu identity and versioning
+- `location: Location` — the physical location (id, name, address, city, state, zip, country)
+- `items: list[Item]` — all available menu items
+- `from_json_file(path)` / `from_dict(data)` — factory methods for loading menu data
+
+**`Order`** — Customer's in-progress order:
+- `order_id: str` — auto-generated UUID
+- `items: list[Item]` — ordered items with quantities
+- Supports `__add__` with an `Item` operand: `updated_order = order + new_item`. If the item (same id/name/category/modifiers) already exists, quantities merge via `Item.__add__`. Otherwise, the item is appended. Returns a new `Order` preserving the original `order_id`.
+
+**`Item`** — Dual-purpose model (menu definition *and* order line item):
+- `item_id`, `name`, `category_name: CategoryName` — identity fields
+- `default_size: Size` — the item's default size (defaults to `Size.REGULAR`)
+- `size: Size | None` — customer-selected size (auto-populated from `default_size` via model validator if not set)
+- `quantity: int` — number ordered (minimum 1, enforced by Pydantic `ge=1`)
+- `modifiers: list[Modifier]` — customer-selected modifications (for orders)
+- `available_modifiers: list[Modifier]` — what modifications are possible (for menu definitions)
+- `Item` supports `__add__` — two identical items (same id/name/category/modifiers) can be added to merge quantities
+- `Order` supports `__add__` with an `Item` operand — `order + item` merges the item into the order (combining quantities for duplicates, appending if new)
+- Supports comparison operators (`>=`, `>`, `<=`, `<`) on quantity for same-item comparisons
+- **No price field** — prices are intentionally not modeled. The system does not quote prices.
+
+**`Modifier`** — Item modification:
+- `modifier_id: str` — unique identifier
+- `name: str` — display name (e.g., "No Canadian Bacon", "Extra Cheese")
+- Hashable and equality-comparable by `(modifier_id, name)`
+
+**`Size`** — StrEnum with five values: `snack`, `small`, `medium`, `large`, `regular`
+
+**`CategoryName`** — StrEnum: `breakfast`, `beef-pork`, `chicken-fish`, `salads`, `snacks-sides`, `desserts`, `beverages`, `coffee-tea`, `smoothies-shakes`
+
 ---
 
 ## Tool Definitions
@@ -163,18 +199,22 @@ Searches the menu for an item. Returns match information without modifying state
 
 ```python
 from langchain_core.tools import tool
-from models import Menu
+from orchestrator.models import Menu
 
 
 @tool
 def lookup_menu_item(item_name: str, menu: Menu) -> dict:
-    """Look up a menu item by name. Use this before adding items to verify
-    they exist on the menu. Returns the matched item details or suggestions
-    if no exact match is found.
+    """Look up a menu item by name. Use this BEFORE adding any item to the
+    order to verify it exists on the menu. Returns the matched item details
+    including category, default size, and available modifiers. If no exact
+    match is found, returns up to 3 suggestions for similar items.
+
+    You MUST call this tool before calling add_item_to_order. Never skip
+    this step.
 
     Args:
         item_name: The item name as spoken by the customer.
-        menu: The current location's menu.
+        menu: The current location's menu (injected via InjectedState).
     """
     # Exact match (case-insensitive)
     for item in menu.items:
@@ -183,9 +223,12 @@ def lookup_menu_item(item_name: str, menu: Menu) -> dict:
                 "found": True,
                 "item_id": item.item_id,
                 "name": item.name,
-                "price": item.price,
-                "available_sizes": [s.value for s in item.available_sizes],
-                "available_modifiers": [m.name for m in item.available_modifiers],
+                "category_name": item.category_name.value,
+                "default_size": item.default_size.value,
+                "available_modifiers": [
+                    {"modifier_id": m.modifier_id, "name": m.name}
+                    for m in item.available_modifiers
+                ],
             }
 
     # No match — suggest similar items
@@ -202,40 +245,68 @@ def lookup_menu_item(item_name: str, menu: Menu) -> dict:
     }
 ```
 
+> **Model alignment notes:**
+> - Returns `category_name` and `default_size` instead of the former `price` and `available_sizes` — these fields match the actual `Item` model.
+> - Returns `available_modifiers` as full `{modifier_id, name}` objects, not bare strings. The LLM needs both fields to construct valid `Modifier` instances when calling `add_item_to_order`.
+> - The `menu` parameter should be injected via LangGraph's `InjectedState`, not passed by the LLM.
+
 ### add_item_to_order
 
-Adds a validated item to the current order.
+Adds a validated item to the current order. Uses `Order.__add__` to merge the item into the order (combining quantities for duplicates via `Item.__add__` internally).
 
 ```python
 from langchain_core.tools import tool
-from models import Order, Item, Size
+from orchestrator.models import Order, Item, Modifier, Size
+from orchestrator.enums import CategoryName
 
 
 @tool
 def add_item_to_order(
+    item_id: str,
     item_name: str,
+    category_name: str,
     quantity: int = 1,
     size: str | None = None,
-    modifiers: list[str] | None = None,
+    modifiers: list[dict] | None = None,
 ) -> dict:
-    """Add an item to the customer's order. Only call this after confirming
-    the item exists via lookup_menu_item.
+    """Add an item to the customer's order. Only call this AFTER you have
+    confirmed the item exists using lookup_menu_item. Pass the exact item_id,
+    item_name, and category_name returned by lookup_menu_item.
+
+    If the same item (same id, name, category, and modifiers) is already in
+    the order, the quantities are merged rather than creating a duplicate.
 
     Args:
-        item_name: Exact menu item name (use the name from lookup_menu_item).
-        quantity: Number of this item (default 1).
-        size: Size if applicable (snack, small, medium, large).
-        modifiers: List of modifications (e.g., "no onions", "extra cheese").
+        item_id: The item_id from lookup_menu_item result.
+        item_name: Exact menu item name from lookup_menu_item result.
+        category_name: Category from lookup_menu_item result.
+        quantity: Number of this item (default 1, minimum 1).
+        size: Size if applicable (snack, small, medium, large, regular).
+              If not specified, uses the item's default_size.
+        modifiers: List of modifier objects from lookup_menu_item's
+                   available_modifiers. Each must have "modifier_id" and
+                   "name" keys. Only use modifiers that appeared in the
+                   item's available_modifiers list.
     """
-    # Implementation adds to state's current_order
+    # Implementation constructs an Item and uses Order.__add__ to merge
+    # it into the current order (duplicates get quantities combined).
     return {
         "added": True,
+        "item_id": item_id,
         "item_name": item_name,
+        "category_name": category_name,
         "quantity": quantity,
-        "size": size or "medium",
+        "size": size or "default",
         "modifiers": modifiers or [],
     }
 ```
+
+> **Model alignment notes:**
+> - Requires `item_id` and `category_name` in addition to `item_name` — all three are required to construct a valid `Item` instance.
+> - `modifiers` are `{modifier_id, name}` dicts (matching the `Modifier` model), not bare strings. The LLM must use modifier objects from `lookup_menu_item`'s `available_modifiers` response.
+> - `size` accepts all five `Size` enum values: `snack`, `small`, `medium`, `large`, `regular`. If omitted, the `Item` model validator auto-populates `size` from `default_size`.
+> - `quantity` has a Pydantic `ge=1` constraint — invalid quantities are rejected at the model layer.
+> - When the same item configuration is added again, `Order.__add__` merges it into the order, using `Item.__add__` internally for quantity combination (e.g., `order + Item(McMuffin, qty=2)` when order already has 1 McMuffin → single entry with quantity 3).
 
 ### get_current_order
 
@@ -244,15 +315,24 @@ Reads back the current order state.
 ```python
 @tool
 def get_current_order() -> dict:
-    """Get the current order summary. Use this when the customer asks
-    what they've ordered so far, or before finalizing."""
-    # Implementation reads from state's current_order
+    """Get the current order summary. Use this when:
+    - The customer asks "what did I order?" or "can you read that back?"
+    - You are about to finalize the order and want to confirm with the customer.
+
+    Returns the order ID, list of items with quantities and sizes, and total
+    item count. Note: prices are not available — do not quote a total."""
+    # Implementation reads from state's current_order (Order model)
     return {
-        "items": [],  # populated from state
-        "item_count": 0,
-        "total_price": 0.0,
+        "order_id": "",       # from Order.order_id (UUID)
+        "items": [],          # populated from Order.items
+        "item_count": 0,      # sum of all item quantities
     }
 ```
+
+> **Model alignment notes:**
+> - Returns `order_id` from the `Order` model (auto-generated UUID) — useful for finalization and tracing.
+> - No `total_price` — the `Item` model has no price field. The system prompt must instruct the LLM not to fabricate totals.
+> - Each item in the response includes `item_id`, `name`, `category_name`, `quantity`, `size`, and `modifiers` — the full `Item` model serialized.
 
 ### finalize_order
 
@@ -261,13 +341,24 @@ Marks the order as complete and triggers the end of the conversation.
 ```python
 @tool
 def finalize_order() -> dict:
-    """Finalize the order. Call this when the customer says they're done
-    ordering and you've confirmed their complete order with them."""
+    """Finalize and submit the order. Call this ONLY when:
+    1. The customer has explicitly said they are done ordering.
+    2. You have read back the complete order to the customer using
+       get_current_order.
+    3. The customer has confirmed the order is correct.
+
+    Do NOT call this if the customer is still adding items or hasn't
+    confirmed. After calling this, thank the customer and end the
+    conversation."""
+    # Implementation reads order_id from state's current_order
     return {
         "finalized": True,
+        "order_id": "",       # from Order.order_id (UUID)
         "message": "Order has been submitted.",
     }
 ```
+
+> **Model alignment note:** Returns the `order_id` from the `Order` model so the orchestrator can reference it in the farewell message (e.g., "Your order #abc123 is confirmed!").
 
 ---
 
@@ -286,35 +377,57 @@ orchestrator_llm = llm.bind_tools(tools)
 
 SYSTEM_PROMPT = """You are a friendly McDonald's drive-thru assistant taking breakfast orders.
 
+LOCATION: {location_name} — {location_address}
+
 CURRENT MENU:
 {menu_items}
 
 CURRENT ORDER:
 {current_order}
 
-INSTRUCTIONS:
-- Greet the customer warmly when the conversation starts.
-- When a customer orders an item, ALWAYS use lookup_menu_item first to verify it exists.
-- Only use add_item_to_order for items confirmed to exist on the menu.
-- If an item isn't found, politely let the customer know and suggest alternatives from the lookup results.
-- When the customer says they're done, read back their complete order for confirmation, then call finalize_order.
-- Keep responses concise and friendly — this is a drive-thru, not a sit-down restaurant.
-- If the customer asks a question about the menu, answer from the menu context provided.
-- Handle multiple items in a single request naturally.
+RULES:
+1. Greet the customer warmly when the conversation starts.
+2. When a customer orders an item, ALWAYS call lookup_menu_item first to verify it exists.
+3. Only call add_item_to_order for items confirmed to exist via lookup_menu_item.
+   Pass the exact item_id, item_name, and category_name from the lookup result.
+4. If an item isn't found, suggest the alternatives from lookup_menu_item results.
+   Do NOT invent alternatives.
+5. When the customer says they're done, call get_current_order, read back the
+   full order, and ask them to confirm.
+6. Only call finalize_order AFTER the customer confirms their order.
+7. Handle multiple items in a single request — call lookup_menu_item for each,
+   then add_item_to_order for each confirmed item.
+8. Keep responses concise and friendly — this is a drive-thru, not a sit-down restaurant.
+9. Answer menu questions from the CURRENT MENU above. Do NOT make up items.
+10. You do NOT have access to prices. Do not quote prices or totals.
+    Say "your total will be at the window" if asked.
+11. If the customer asks to remove or change an item, explain you can only
+    add items right now.
+12. When adding modifiers, only use modifiers from the item's available_modifiers
+    list returned by lookup_menu_item. Do not accept modifiers that aren't
+    available for that item.
+13. Sizes are: snack, small, medium, large, regular. If the customer doesn't
+    specify a size, do not ask — the item's default size will be used automatically.
 """
 
 
 def orchestrator_node(state: DriveThruState) -> dict:
     """The central orchestrator node. Reasons about the conversation
     and decides what tools to call."""
+    location = state["menu"].location
     menu_items = "\n".join(
-        f"- {item.name} (${item.price:.2f})" for item in state["menu"].items
+        f"- {item.name} [{item.category_name.value}] (default size: {item.default_size.value})"
+        for item in state["menu"].items
     )
     current_items = "\n".join(
-        f"- {item.quantity}x {item.name}" for item in state["current_order"].items
+        f"- {item.quantity}x {item.name} ({item.size.value})"
+        + (f" [{', '.join(m.name for m in item.modifiers)}]" if item.modifiers else "")
+        for item in state["current_order"].items
     ) or "Empty"
 
     system_message = SYSTEM_PROMPT.format(
+        location_name=location.name,
+        location_address=f"{location.address}, {location.city}, {location.state} {location.zip}",
         menu_items=menu_items,
         current_order=current_items,
     )
@@ -324,6 +437,14 @@ def orchestrator_node(state: DriveThruState) -> dict:
 
     return {"messages": [response]}
 ```
+
+> **Model alignment notes:**
+> - Menu items now show `[category_name]` and `(default size: ...)` instead of prices — matching the actual `Item` fields.
+> - Location info from `Menu.location` (the `Location` model) is injected into the prompt header.
+> - Current order displays size and modifiers per item, since those are tracked on `Item`.
+> - Rule 10 explicitly prevents the LLM from hallucinating prices from training data.
+> - Rule 12 constrains the LLM to use only `Modifier` objects from `available_modifiers`, since the `Modifier` model requires both `modifier_id` and `name`.
+> - Rule 13 lists all five `Size` enum values including `regular` and tells the LLM not to ask about size when the customer doesn't specify one (the model validator handles defaults).
 
 ---
 
@@ -397,7 +518,7 @@ Turn 2:
   → graph.invoke() runs again (checkpointer restores state from turn 1)
   → orchestrator sees full history, calls finalize_order
   → graph hits END, returns response
-  → "Your order is one Egg McMuffin for $4.49. Have a great day!"
+  → "Your order is one Egg McMuffin. Your total will be at the window. Have a great day!"
 ```
 
 The `thread_id` in the config is what connects these separate invocations into a single conversation:
@@ -479,11 +600,14 @@ orchestrator (reasoning):
   - Need to verify "Egg McMuffin" exists
   - Call lookup_menu_item("Egg McMuffin")
 
-tools: lookup_menu_item returns {found: True, name: "Egg McMuffin", ...}
+tools: lookup_menu_item returns {found: True, item_id: "mcmuffin-egg-001",
+       name: "Egg McMuffin", category_name: "breakfast",
+       default_size: "regular", available_modifiers: [...]}
 
 orchestrator (reasoning):
   - Item exists, customer wants 1 (default quantity)
-  - Call add_item_to_order(item_name="Egg McMuffin", quantity=1)
+  - Call add_item_to_order(item_id="mcmuffin-egg-001",
+      item_name="Egg McMuffin", category_name="breakfast", quantity=1)
 
 tools: add_item_to_order returns {added: True, ...}
 
@@ -493,7 +617,7 @@ orchestrator (response):
 
 ### Multi-Intent Utterance
 
-Customer: *"Two hash browns and a large coffee. What's the cheapest sandwich you have?"*
+Customer: *"Two hash browns and a large coffee. What sandwiches do you have?"*
 
 ```
 orchestrator (reasoning):
@@ -501,21 +625,26 @@ orchestrator (reasoning):
   - Call lookup_menu_item("hash brown")
   - Call lookup_menu_item("coffee")
 
-tools: both return {found: True, ...}
+tools: both return {found: True, ...} with item_id, category_name, etc.
 
 orchestrator (reasoning):
   - Both items exist
-  - Call add_item_to_order("Hash Brown", quantity=2)
-  - Call add_item_to_order("Coffee", quantity=1, size="large")
+  - Call add_item_to_order(item_id="hashbrown-001", item_name="Hash Brown",
+      category_name="snacks-sides", quantity=2)
+  - Call add_item_to_order(item_id="coffee-001", item_name="Coffee",
+      category_name="beverages", quantity=1, size="large")
 
 tools: both return {added: True, ...}
 
+orchestrator (reasoning):
+  - Answer menu question from system prompt context (no tool needed)
+
 orchestrator (response):
-  "Got it — two hash browns and a large coffee! As for our cheapest
-   sandwich, that'd be the Sausage McMuffin at $3.29. Want to add one?"
+  "Got it — two hash browns and a large coffee! For sandwiches, we've
+   got the Egg McMuffin, Sausage McMuffin, and McGriddle. Want to add one?"
 ```
 
-Notice how the orchestrator handled three different "intents" in a single turn without any routing logic.
+Notice how the orchestrator handled three different "intents" in a single turn without any routing logic. The menu question is answered from the system prompt context — no price is quoted since the model has no price data.
 
 ### Item Not on Menu
 
@@ -566,17 +695,22 @@ The orchestrator pattern isn't always the right choice. Consider reverting to ex
 
 ### Tool Design
 
-1. **Tools should be deterministic** — All business logic (menu matching, validation, price calculation) lives in tools, not in the LLM's reasoning.
+1. **Tools should be deterministic** — All business logic (menu matching, validation, size defaults) lives in tools, not in the LLM's reasoning.
 2. **Tools should be idempotent where possible** — Calling `lookup_menu_item` twice for the same item should return the same result.
 3. **Tool descriptions matter** — The LLM decides which tool to call based on the description. Be precise about when each tool should be used.
-4. **Return structured data from tools** — Give the LLM clear data to reason about in subsequent turns.
+4. **Return structured data from tools** — Give the LLM clear data to reason about in subsequent turns. Return full `Modifier` objects (`modifier_id` + `name`), not bare strings.
+5. **Leverage Pydantic validation** — `Item.quantity` has `ge=1`, `Size` and `CategoryName` are `StrEnum`s. Let the model layer reject bad data rather than writing manual validation in tools.
+6. **Use `Order.__add__` for item addition** — Add items to orders via `updated_order = order + new_item`. This handles both appending new items and merging quantities for duplicates (via `Item.__add__` internally).
 
 ### System Prompt
 
-1. **Include the full menu** — The orchestrator needs menu context to answer questions and guide the customer.
-2. **Include the current order** — So the orchestrator knows what's already been ordered.
-3. **Be explicit about the workflow** — "ALWAYS use lookup_menu_item before add_item_to_order" prevents the LLM from skipping validation.
-4. **Set the tone** — "concise and friendly" keeps responses appropriate for a drive-thru.
+1. **Include the full menu with categories and sizes** — The orchestrator needs menu context to answer questions and guide the customer. Show `[category_name]` and `(default size: ...)` per item — no prices.
+2. **Include the current order with sizes and modifiers** — So the orchestrator knows what's already been ordered, including customizations.
+3. **Include location context** — From `Menu.location`, inject the restaurant name and address into the prompt.
+4. **Be explicit about the workflow** — "ALWAYS use lookup_menu_item before add_item_to_order" prevents the LLM from skipping validation.
+5. **Set the tone** — "concise and friendly" keeps responses appropriate for a drive-thru.
+6. **Explicitly forbid price quoting** — The `Item` model has no price field. Without this rule, the LLM will hallucinate prices from training data.
+7. **Constrain modifier usage** — The LLM must only use modifiers from `available_modifiers` returned by `lookup_menu_item`, since `Modifier` requires both `modifier_id` and `name`.
 
 ### Persistence
 
@@ -625,9 +759,10 @@ result = graph.invoke(
 
 What you'll see in Langfuse:
 - **One trace per customer turn** with clear spans for each tool call
-- **Tool call inputs/outputs** — exactly what the orchestrator asked for and got back
+- **Tool call inputs/outputs** — exactly what the orchestrator asked for and got back (including `item_id`, `category_name`, modifier objects)
 - **LLM reasoning** visible in the orchestrator span
 - **Token usage and cost** per turn
+- **Order ID** from `Order.order_id` for correlating traces to specific orders
 
 ---
 
@@ -642,6 +777,8 @@ What you'll see in Langfuse:
 
 ### Future Considerations
 - Add `remove_item_from_order` and `modify_item` tools (much easier than adding new graph branches)
-- Add `get_menu_by_category` tool for browsing
+- Add `get_menu_by_category` tool for browsing — can filter `Menu.items` by `CategoryName`
 - Consider structured output for the final response if brand consistency requires it
 - Evaluate whether a hybrid approach (orchestrator + one guard-rail node) is needed
+- Consider adding `price: float` to the `Item` model if price quoting becomes a requirement
+- Consider adding `available_sizes: list[Size]` to `Item` if items need to advertise which sizes they come in (currently only `default_size` is modeled)
