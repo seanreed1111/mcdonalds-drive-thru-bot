@@ -8,12 +8,14 @@ Exported as `graph` for langgraph.json.
 """
 
 import json
+import operator
+import re
 from functools import lru_cache
+from typing import Annotated
 
 from langchain_core.messages import SystemMessage, ToolMessage
 from langchain_mistralai import ChatMistralAI
 from langfuse import Langfuse
-from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.prebuilt import ToolNode
 from loguru import logger
@@ -42,6 +44,7 @@ class DriveThruState(MessagesState):
 
     menu: Menu  # Loaded menu for this location
     current_order: Order  # Customer's order in progress
+    reasoning: Annotated[list[str], operator.add]  # LLM decision rationale log
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +87,13 @@ RULES:
     list returned by lookup_menu_item. Do not accept modifiers that aren't
     available for that item.
 13. Sizes are: snack, small, medium, large, regular. If the customer doesn't
-    specify a size, do not ask — the item's default size will be used automatically.\
+    specify a size, do not ask — the item's default size will be used automatically.
+14. ALWAYS start your response with a <reasoning> tag explaining your decision.
+    If you are calling tools, explain which tools you chose and why.
+    If you are responding directly, explain why no tool call is needed.
+    Example: <reasoning>Customer asked for an Egg McMuffin. I need to call
+    lookup_menu_item to verify it exists before adding it.</reasoning>
+    The reasoning tag MUST appear before any other content in your response.\
 """
 
 
@@ -158,6 +167,24 @@ def _get_orchestrator_llm():
 # Nodes
 # ---------------------------------------------------------------------------
 
+_REASONING_PATTERN = re.compile(r"<reasoning>(.*?)</reasoning>", re.DOTALL)
+
+
+def _extract_reasoning(content: str) -> tuple[str, str]:
+    """Extract and strip <reasoning> tags from LLM response content.
+
+    Returns:
+        (reasoning_text, cleaned_content) — reasoning_text is the extracted
+        reasoning (empty string if no tag found), cleaned_content is the
+        original content with the <reasoning> tag removed.
+    """
+    match = _REASONING_PATTERN.search(content)
+    if not match:
+        return "", content
+    reasoning_text = match.group(1).strip()
+    cleaned = _REASONING_PATTERN.sub("", content).strip()
+    return reasoning_text, cleaned
+
 
 def orchestrator_node(state: DriveThruState) -> dict:
     """Central orchestrator node. Reasons about the conversation and decides
@@ -207,15 +234,38 @@ def orchestrator_node(state: DriveThruState) -> dict:
     logger.debug("Invoking orchestrator LLM with {} messages", len(messages))
     response = _get_orchestrator_llm().invoke(messages)
 
+    # Extract reasoning from <reasoning> tags in content
+    raw_reasoning, cleaned_content = _extract_reasoning(response.content or "")
+
+    # Strip reasoning tags from the message content before storing
+    if cleaned_content != (response.content or ""):
+        response.content = cleaned_content
+
+    # Format reasoning entry with structured prefix
     if response.tool_calls:
-        logger.info(
-            "Orchestrator requesting tools: {}",
-            [tc["name"] for tc in response.tool_calls],
-        )
+        tool_names = ", ".join(tc["name"] for tc in response.tool_calls)
+        logger.info("Orchestrator requesting tools: {}", tool_names)
+        if raw_reasoning:
+            reasoning_entry = f"[TOOL_CALL] {tool_names}: {raw_reasoning}"
+        else:
+            # Fallback: generate from tool call metadata
+            args_summary = "; ".join(
+                f"{tc['name']}({', '.join(f'{k}={v!r}' for k, v in tc['args'].items())})"
+                for tc in response.tool_calls
+            )
+            reasoning_entry = f"[TOOL_CALL] {tool_names}: {args_summary}"
     else:
         logger.info("Orchestrator responding directly (no tool calls)")
+        if raw_reasoning:
+            reasoning_entry = f"[DIRECT] {raw_reasoning}"
+        else:
+            # Fallback: note that no reasoning was provided
+            snippet = (response.content or "")[:80]
+            reasoning_entry = f"[DIRECT] {snippet}"
 
-    return {"messages": [response]}
+    logger.debug("Reasoning: {}", reasoning_entry)
+
+    return {"messages": [response], "reasoning": [reasoning_entry]}
 
 
 def should_continue(state: DriveThruState) -> str:
@@ -357,5 +407,6 @@ _builder.add_conditional_edges(
     },
 )
 
-_checkpointer = MemorySaver()
-graph = _builder.compile(checkpointer=_checkpointer)
+# Compile without checkpointer — LangGraph Studio provides its own.
+# For CLI usage, main.py compiles from _builder with a MemorySaver.
+graph = _builder.compile()
