@@ -68,7 +68,10 @@
       "Bash(date:*)",
       "Bash(curl:*)",
       "Bash(git stash:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(npx --yes @mermaid-js/mermaid-cli --version)",
+      "Bash(npm install -g @mermaid-js/mermaid-cli)",
+      "WebFetch(domain:imgflip.com)"
     ]
   }
 }

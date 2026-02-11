@@ -15,6 +15,7 @@ dev = [
     "langgraph-cli[inmem]>=0.4.12",
     "langgraph-sdk>=0.3.3",
     "matplotlib>=3.10.8",
+    "mermaid-py>=0.8.3",
     "pillow>=12.1.0",
     "pre-commit>=4.5.1",
     "ruff>=0.14.14",
