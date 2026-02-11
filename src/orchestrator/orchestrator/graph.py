@@ -18,6 +18,7 @@ from langchain_mistralai import ChatMistralAI
 from langfuse import Langfuse
 from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.prebuilt import ToolNode
+from langgraph.types import RetryPolicy
 from loguru import logger
 
 from .config import get_settings
@@ -378,13 +379,25 @@ def should_end_after_update(state: DriveThruState) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Retry Policies
+# ---------------------------------------------------------------------------
+
+LLM_RETRY_POLICY = RetryPolicy(
+    max_attempts=5,
+    initial_interval=1.0,
+    backoff_factor=2.0,
+    max_interval=30.0,
+    jitter=True,
+)
+
+# ---------------------------------------------------------------------------
 # Graph Construction
 # ---------------------------------------------------------------------------
 
 _tool_node = ToolNode(_tools)
 
 _builder = StateGraph(DriveThruState)
-_builder.add_node("orchestrator", orchestrator_node)
+_builder.add_node("orchestrator", orchestrator_node, retry_policy=LLM_RETRY_POLICY)
 _builder.add_node("tools", _tool_node)
 _builder.add_node("update_order", update_order)
 
