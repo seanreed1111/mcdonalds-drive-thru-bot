@@ -8,7 +8,7 @@ dependencies = []
 # No [build-system] — root is not installable, just a workspace coordinator
 
 [tool.uv.workspace]
-members = ["src/stage_*"]
+members = ["src/orchestrator"]
 
 [dependency-groups]
 dev = [
@@ -39,7 +39,7 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.ty.src]
-include = ["src/stage_1", "src/stage_2", "src/stage_3"]
+include = ["src/orchestrator"]
 
 [tool.ty.environment]
 python-version = "3.12"

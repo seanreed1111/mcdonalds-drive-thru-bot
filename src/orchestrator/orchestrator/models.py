@@ -120,6 +120,24 @@ class Order(BaseModel):
     order_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     items: list[Item] = Field(default_factory=list)
 
+    def __add__(self, other: object) -> "Order":
+        """Add an Item to this Order, merging quantities for duplicate items.
+
+        Usage: updated_order = order + new_item
+        If the item (same id/name/category/modifiers) already exists in the
+        order, quantities are merged via Item.__add__. Otherwise, the item
+        is appended.
+        """
+        if not isinstance(other, Item):
+            return NotImplemented
+        updated_items = list(self.items)
+        for i, existing in enumerate(updated_items):
+            if existing._is_same_item(other):
+                updated_items[i] = existing + other
+                return Order(order_id=self.order_id, items=updated_items)
+        updated_items.append(other)
+        return Order(order_id=self.order_id, items=updated_items)
+
 
 class Menu(BaseModel):
     menu_id: str

@@ -1,6 +1,6 @@
 # McDonald's Breakfast Menu Data Model
 
-Pydantic v2 data models for a McDonald's breakfast menu drive-thru voice ordering system.
+Pydantic v2 data models for a McDonald's breakfast menu drive-thru chatbot ordering system.
 
 ## Tech Stack
 
@@ -14,20 +14,16 @@ This is a uv workspace project with multiple independent stages:
 
 ```
 src/
-├── stage_1/               # Simple LangGraph chatbot
+├── orchestrator/               # Simple LangGraph chatbot
 │   ├── pyproject.toml     # stage_1's own dependencies
-│   └── stage_1/           # Python package
+│   └── orchestrator/           # Python package
 │       ├── config.py
 │       ├── graph.py
 │       └── main.py
-├── stage_2/               # TBD (skeleton)
-│   ├── pyproject.toml
-│   └── stage_2/
-├── stage_3/               # Data models
-│   ├── pyproject.toml
-│   └── stage_3/
 │       ├── enums.py       # Enums (Size, CategoryName)
 │       └── models.py      # Pydantic models (Item, Modifier, Order, Menu)
+
+
 menus/                     # Menu data (raw CSV, transformed JSON)
 thoughts/                  # Design notes and requirements
 ```
@@ -39,10 +35,10 @@ This is a uv workspace with multiple packages. Each stage has its own dependenci
 ```bash
 # Workspace commands
 uv sync --all-packages              # Install all stages' dependencies
-uv sync --package stage-1           # Install only stage_1's dependencies
+
 
 # Running stage-specific commands
-uv run --package stage-1 python -m stage_1.main   # Run stage_1 chatbot
+uv run --package orchestrator python -m stage_1.main   # Run stage_1 chatbot
 uv run --package stage-3 python                   # Python REPL with stage_3 available
 
 # Adding dependencies to a specific stage
@@ -51,11 +47,8 @@ cd src/stage_3 && uv add <package>  # Add to stage_3
 
 # Make targets (use SCOPE variable for stage selection)
 make chat                # Run stage_1 chatbot CLI (default SCOPE=1)
-make chat SCOPE=2        # Run stage_2 chatbot CLI
 make dev                 # Run LangGraph Studio for stage_1 (default SCOPE=1)
-make dev SCOPE=2         # Run LangGraph Studio for stage_2
 make setup               # Install all packages (default SCOPE=all)
-make setup SCOPE=1       # Install stage_1 only
 make test                # Run smoke tests
 make typecheck           # Run ty type checker
 date -Iseconds           # Get current date
@@ -75,6 +68,14 @@ date -Iseconds           # Get current date
 - `Modifier` - Item variations (Extra Cheese, No Onions, etc.)
 - `Order` - Collection of items for a customer order
 - `Menu` - Full menu with items
+
+## MCP Search Guidelines
+
+- **`searchLangfuseDocs`**: Ask ONE focused natural-language question per call. Do not stuff multiple keywords/topics into a single query — this returns huge responses that fill up context.
+  - Bad: `"LangGraph state checkpointer persistence tool calling"`
+  - Good: `"How do I set up Langfuse tracing for a LangGraph agent?"`
+- **`getLangfuseDocsPage`**: If you already know the specific docs page you need, fetch it directly instead of searching.
+- Make multiple small, focused queries rather than one broad query.
 
 ## Agent Behavior: Scope and Confirmation
 

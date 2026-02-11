@@ -6,7 +6,7 @@ model: opus
 
 # Plan Review
 
-You are tasked with reviewing implementation plans to assess their quality, completeness, and executability. Your goal is to provide constructive feedback that helps improve plans before execution.
+You are tasked with reviewing implementation plans to assess their quality, completeness, inconsistencies, ambiguity, and executability. Your goal is to provide constructive detailed feedback that helps improve plans before execution. The goal: any agent should be able to execute the plan without further questoins to the user or any further user input. 
 
 ## Initial Response
 
@@ -64,7 +64,7 @@ Then wait for the user's input.
 Use the following template when spawning the review agent:
 
 """
-You are a specialized plan review agent. Your task is to analyze the following implementation plan for quality, completeness, and executability.
+You are a specialized plan review agent. Your task is to analyze the following implementation plan for quality, completeness, inconsistencies, ambiguity, and executability. The goal: any agent should be able to execute the plan without further questions to the user or any further user input whatsoever. 
 
 ## Review Guidelines
 
@@ -89,16 +89,16 @@ Evaluate across 5 dimensions (100 points total):
 - Naming conventions: 5 pts - Are names consistent throughout?
 - Pattern adherence: 5 pts - Does it follow existing codebase patterns?
 
-### 3. Clarity (20 points)
+### 3. Clarity (25 points)
 - Instruction clarity: 7 pts - Are instructions clear and unambiguous?
 - Success criteria clarity: 7 pts - Are success criteria specific and measurable?
-- Minimal ambiguity: 6 pts - Is the plan explicit rather than implicit?
+- Minimal ambiguity: 11 pts - Is the plan explicit rather than implicit?
 
 ### 4. Completeness (25 points)
-- All steps present: 8 pts - Are all necessary steps included?
+- All steps present: 11 pts - Are all necessary steps included? Agents should be able to follow the exact steps shown in plan and should be able to implement the plan without further user input or explanations. If not, there are steps missing that should be added.
 - Context adequate: 6 pts - Is sufficient context provided?
 - Edge cases covered: 6 pts - Are edge cases and error scenarios addressed?
-- Testing comprehensive: 5 pts - Is the testing strategy thorough?
+- Testing comprehensive: 2 pts - Is the testing strategy thorough?
 
 ### 5. Executability (20 points)
 - Agent-executable: 8 pts - Can agents execute without human intervention?

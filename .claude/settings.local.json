@@ -57,7 +57,9 @@
       "WebFetch(domain:docs.smith.langchain.com)",
       "WebFetch(domain:pypi.org)",
       "WebFetch(domain:reference.langchain.com)",
-      "Bash(uv pip show:*)"
+      "Bash(uv pip show:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo edit:*)"
     ]
   }
 }

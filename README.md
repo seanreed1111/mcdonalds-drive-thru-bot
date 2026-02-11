@@ -1,6 +1,6 @@
-# McDonald's Breakfast Menu - Voice Ordering System
+# McDonald's Breakfast Menu - chatbot Ordering System
 
-A drive-thru voice ordering system for McDonald's breakfast menu, built with LangGraph and Pydantic v2.
+A drive-thru chatbot ordering system for McDonald's breakfast menu, built with LangGraph and Pydantic v2.
 
 ## Tech Stack
 
@@ -17,7 +17,7 @@ A drive-thru voice ordering system for McDonald's breakfast menu, built with Lan
 src/
   enums.py           # Enums (Size, CategoryName)
   models.py          # Pydantic models (Item, Modifier, Order, Menu, Location)
-  stage_1/           # Stage 1: Simple chatbot
+  stage_3/           # Stage 1: Simple chatbot
     config.py        #   Settings from environment variables
     graph.py         #   LangGraph chatbot graph with Langfuse tracing
     main.py          #   CLI chat interface with streaming

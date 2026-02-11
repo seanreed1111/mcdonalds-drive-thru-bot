@@ -1,8 +1,7 @@
 {
-  "dependencies": ["./src/stage_1", "./src/stage_2"],
+  "dependencies": ["./src/orchestrator"],
   "graphs": {
-    "chatbot_simple": "./src/stage_1/stage_1/graph.py:graph",
-    "talking_chatbots": "./src/stage_2/stage_2/graph.py:graph"
+    "orchestrator": "./src/orchestrator/orchestrator/graph.py:graph"
   },
   "env": ".env"
 }
