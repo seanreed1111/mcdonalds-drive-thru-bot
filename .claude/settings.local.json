@@ -59,7 +59,12 @@
       "WebFetch(domain:reference.langchain.com)",
       "Bash(uv pip show:*)",
       "Bash(gh auth:*)",
-      "Bash(gh repo edit:*)"
+      "Bash(gh repo edit:*)",
+      "WebFetch(domain:docs.mistral.ai)",
+      "WebFetch(domain:blog.langchain.com)",
+      "WebFetch(domain:pub.towardsai.net)",
+      "WebFetch(domain:www.ibm.com)",
+      "WebFetch(domain:www.datacamp.com)"
     ]
   }
 }
