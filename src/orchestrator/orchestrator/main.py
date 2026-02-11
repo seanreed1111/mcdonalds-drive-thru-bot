@@ -56,15 +56,17 @@ def main() -> None:
     order = Order()
 
     # Session config for checkpointer
-    thread_id = f"cli-{uuid.uuid4()}"
-    config = {"configurable": {"thread_id": thread_id}}
+    session_id = f"cli-{uuid.uuid4()}"
+    config = {"configurable": {"thread_id": session_id}}
+    logger.info("Session started (session_id={})", session_id)
 
     # Attach Langfuse callback handler if available
     langfuse_handler = _create_langfuse_handler()
     if langfuse_handler:
         config["callbacks"] = [langfuse_handler]
-        logger.info("Langfuse tracing enabled")
-        print("Langfuse tracing: enabled")
+        config["metadata"] = {"langfuse_session_id": session_id}
+        logger.info("Langfuse tracing enabled (session_id={})", session_id)
+        print(f"Langfuse tracing: enabled (session_id={session_id})")
     else:
         logger.info("Langfuse tracing disabled (no credentials)")
         print("Langfuse tracing: disabled (no credentials)")
@@ -143,7 +145,7 @@ def main() -> None:
 
         get_client().flush()
 
-    logger.info("Chatbot session ended (thread_id={})", thread_id)
+    logger.info("Chatbot session ended (session_id={})", session_id)
 
 
 if __name__ == "__main__":
