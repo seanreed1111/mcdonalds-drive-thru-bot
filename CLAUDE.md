@@ -69,6 +69,15 @@ date -Iseconds           # Get current date
 - `Order` - Collection of items for a customer order
 - `Menu` - Full menu with items
 
+## Imgflip Meme API
+
+This repo has access to the [Imgflip API](https://imgflip.com/api) for generating memes. Credentials are stored in `.env` as `IMAGEFLIP_USERNAME` and `IMAGEFLIP_PASSWORD`. See `docs/blogs/building-a-drive-thru-chatbot-with-langgraph/memes/generate_memes.py` for a working example.
+
+- **API endpoint**: `https://api.imgflip.com/caption_image` (POST)
+- **Get popular templates**: `https://api.imgflip.com/get_memes` (GET)
+- **Required params**: `template_id`, `username`, `password`, plus `boxes[i][text]` for each text box
+- Read credentials from `.env` at runtime — do not hardcode them.
+
 ## MCP Search Guidelines
 
 - **`searchLangfuseDocs`**: Ask ONE focused natural-language question per call. Do not stuff multiple keywords/topics into a single query — this returns huge responses that fill up context.

@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.5.0](https://github.com/seanreed1111/mcdonalds-drive-thru-bot/pull/8) - 2026-02-13
+
+### Added
+- Add Langfuse evaluation blog post drafts (v1 and v2) documenting the full eval pipeline (#8)
+- Add Substack-friendly version of the eval blog with code/table screenshot images (#8)
+- Add `convert_to_substack.py` script for converting markdown to Substack format (code/tables to PNG) (#8)
+- Add `/convert_to_substack` Claude command for one-step blog conversion (#8)
+- Add meme assets and generation script for the eval blog (#8)
+- Add Langfuse Python SDK documentation outline (#8)
+- Add LangGraph testing implementation plan (#8)
+- Add evaluation blog planning notes and prompt optimization research (#8)
+- Add Imgflip Meme API documentation to CLAUDE.md (#8)
+
+### Changed
+- Reorganize tutorials into `docs/tutorials/` directory (#8)
+- Rename and consolidate planning docs for Langfuse evaluation and state diagrams (#8)
+
 ## [0.4.0](https://github.com/seanreed1111/mcdonalds-drive-thru-bot/pull/7) - 2026-02-11
 
 ### Added
