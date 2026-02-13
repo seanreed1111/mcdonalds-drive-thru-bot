@@ -74,7 +74,8 @@
       "WebFetch(domain:imgflip.com)",
       "Bash(PYTHONIOENCODING=utf-8 uv run:*)",
       "mcp__langfuse-docs__getLangfuseOverview",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "WebFetch(domain:api.imgflip.com)"
     ]
   }
 }

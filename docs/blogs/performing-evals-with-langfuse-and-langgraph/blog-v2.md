@@ -1,8 +1,10 @@
-<!-- created: 2026-02-13 -->
+<!-- modified: 2026-02-13 -->
 
 # From Vibes to Metrics: Building an Evaluation Pipeline for an AI Drive-Thru Agent with Langfuse v3
 
 You built an LLM-powered agent. It mostly works. You changed the prompt, chatted with it a few times, and it "seemed good." Ship it.
+
+![Drake meme: rejecting "chatting with your agent 3 times and shipping," approving "one command, a score, and the confidence to ship"](memes/meme-drake-vibes-vs-metrics.png)
 
 We've all been there. This post walks through how we moved past vibes-based testing for our McDonald's breakfast drive-thru chatbot and built a repeatable evaluation pipeline with Langfuse v3. By the end, we had one command, a quantitative score, and the confidence to actually ship prompt changes.
 
@@ -49,6 +51,8 @@ Before evaluations, our development workflow looked like this:
 3. "Seems good" → ship
 4. Users report broken orders a week later → panic
 ```
+
+![Gru's Plan meme: "Change the prompt," "Chat with the agent a few times," then realizing "Users report broken orders a week later"](memes/meme-grus-plan.png)
 
 The problems with this are obvious once you list them:
 
@@ -100,6 +104,8 @@ Pay attention to the "absence" categories. `not_on_menu`, `greeting`, and `ambig
 ```
 
 Without these, you'd never catch the hallucination bug where the agent confidently adds an item that doesn't exist on the breakfast menu.
+
+![Is This a Pigeon meme: drive-thru agent looking at a Big Mac asking "Is this a breakfast menu item?"](memes/meme-is-this-a-breakfast-item.png)
 
 ### Dataset Item Structure
 
